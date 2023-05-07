@@ -31,19 +31,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         // 1. Request Header 에서 토큰을 꺼냄
-        LOGGER.info("[JwtAuthenticationFilter] doFilterInternal 시작");
         String jwt = resolveToken(request);
-        LOGGER.info("[JwtAuthenticationFilter] request : {}", request);
-        LOGGER.info("[JwtAuthenticationFilter] resolveToken(request) : {}", jwt);
-        LOGGER.info("[JwtAuthenticationFilter] validateAccessToken 으로 토큰 유효성 검사 시작");
         // 2. validateToken 으로 토큰 유효성 검사
         // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
         if (StringUtils.hasText(jwt) && jwtService.validateAccessToken(jwt)) {
             Authentication authentication = jwtService.getAuthentication(jwt);
-            LOGGER.info("[JwtAuthenticationFilter] Authentication 을 가져와서 SecurityContext 에 저장");
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } else {
-            LOGGER.info("[JwtAuthenticationFilter] 토큰이 비어있는 상태로 진행");
         }
 
         filterChain.doFilter(request, response);
@@ -51,11 +44,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
     // Request Header 에서 토큰 정보를 꺼내오기
     private String resolveToken(HttpServletRequest request) {
-        LOGGER.info("[JwtAuthenticationFilter] resolveToken 시작");
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        LOGGER.info("[JwtAuthenticationFilter] request.getHeader(AUTHORIZATION_HEADER) : {}", bearerToken);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            LOGGER.info("[JwtAuthenticationFilter] resolveToken 종료 bearerToken.substring(7) : {}", bearerToken.substring(7));
             return bearerToken.substring(7);
         }
         return null;
