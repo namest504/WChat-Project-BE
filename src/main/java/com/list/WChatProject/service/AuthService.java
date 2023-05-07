@@ -31,7 +31,7 @@ public class AuthService {
 
     public Long getUidFromKakaoAccount(String kakaoId) {
         return memberRepository.findBySocialIdAndAccountType(kakaoId, AccountType.KAKAO)
-                .orElseThrow( () -> new CustomException(HttpStatus.BAD_REQUEST, "kakao로 로그인된 아이디가 없습니다."))
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "kakao로 로그인된 아이디가 없습니다."))
                 .getId();
     }
 
@@ -40,18 +40,30 @@ public class AuthService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 가입되어있는 아이디 입니다.");
         }
 
-        Member member = Member.builder()
-                .userId(registerRequestDto.getUserId())
-                .password(passwordEncoder.encode(registerRequestDto.getPassword()))
-                .isBan(false)
-                .build();
-        return memberRepository.save(member);
+        if (registerRequestDto.getAccountType() == AccountType.KAKAO) {
+            Member member = Member.builder()
+                    .socialId(registerRequestDto.getUserId())
+                    .isBan(false)
+                    .accountType(AccountType.KAKAO)
+                    .build();
+            return memberRepository.save(member);
+        } else {
+            Member member = Member.builder()
+                    .userId(registerRequestDto.getUserId())
+                    .password(passwordEncoder.encode(registerRequestDto.getPassword()))
+                    .isBan(false)
+                    .accountType(AccountType.BASIC)
+                    .build();
+            return memberRepository.save(member);
+        }
+
+
     }
 
     public Long login(LoginDto login) {
         Member member = memberRepository.findByUserId(login.getUserId())
                 .orElseThrow(
-                () -> new CustomException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다."));
+                        () -> new CustomException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다."));
 
         if (!passwordEncoder.matches(login.getPassword(), member.getPassword())) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다.");

@@ -32,7 +32,6 @@ public class KaKaoAuthDto {
 	@Setter
 	public static class kakao_account {
 		private String email;
-		private String name;
 		private profile profile;
 	}
 

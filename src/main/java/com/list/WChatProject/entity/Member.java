@@ -23,14 +23,15 @@ public class Member implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String userId;
-
+    @Column
     private String socialId;
-
+    @Column
     private String password;
-
+    @Enumerated(EnumType.STRING)
     private AccountType accountType;
-
+    @Column
     private boolean isBan;
 
     @Override

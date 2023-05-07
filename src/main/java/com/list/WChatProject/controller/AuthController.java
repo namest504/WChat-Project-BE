@@ -38,12 +38,12 @@ public class AuthController {
 
         KakaoAccountInformationRequestResponse kakaoAccountInformationRequestResponse = kakaoAPIService
                 .getKakaoAccountInformation(kakaoAccountToken);
-        LOGGER.info("kakaoAccountInformationRequestResponse.getKakao_account().getName() : {}", kakaoAccountInformationRequestResponse.getKakao_account().getName());
         LOGGER.info("kakaoAccountInformationRequestResponse.getKakao_account().getEmail() : {}", kakaoAccountInformationRequestResponse.getKakao_account().getEmail());
-        LOGGER.info("kakaoAccountInformationRequestResponse.getKakao_account().getProfile() : {}",kakaoAccountInformationRequestResponse.getKakao_account().getProfile());
+        LOGGER.info("kakaoAccountInformationRequestResponse.getKakao_account().getProfile() : {}",kakaoAccountInformationRequestResponse.getKakao_account().getProfile().getNickname());
         LOGGER.info("kakaoAccountInformationRequestResponse.getId() : {}",kakaoAccountInformationRequestResponse.getId());
 
         String kakaoId = kakaoAccountInformationRequestResponse.getId();
+        authService.register(new RegisterRequestDto(kakaoAccountInformationRequestResponse.getKakao_account().getEmail(), null, AccountType.KAKAO));
 
         Long uid = authService.getUidFromKakaoAccount(kakaoId);
         String accessToken = jwtService.createAccessToken(uid);

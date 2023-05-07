@@ -1,6 +1,7 @@
 package com.list.WChatProject.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.list.WChatProject.entity.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +37,7 @@ public class MemberDto {
     public static class RegisterRequestDto {
         private String userId;
         private String password;
+        private AccountType accountType;
     }
 
     @Getter
