@@ -30,6 +30,6 @@ public class MessageController {
         }
         sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
         LOGGER.info("[/topic/chat/room/{}]으로 ", message.getRoomId());
-        LOGGER.info("[{}] 가 [{}]를 보냈습니다.", message.getSender(), message.getRoomId(), message.getMessage());
+        LOGGER.info("[{}] 가 [{}]를 보냈습니다.", message.getSender(), message.getMessage());
     }
 }
