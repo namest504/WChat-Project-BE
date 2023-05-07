@@ -70,6 +70,9 @@ public class AuthService {
         Member member = memberRepository.findById(uId)
                 .orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "로그인이 필요한 기능입니다."));
 
+        if (memberRepository.existsByNickName(nickName)) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "이미 존재하는 닉네임입니다.");
+        }
         // 닉네임 변경 시간이 1분이 지났으면
         if (member.getChangeAt().isAfter(member.getChangeAt().plusMinutes(1))) {
             member.setNickName(nickName);
@@ -78,6 +81,12 @@ public class AuthService {
             return member.getChangeAt().plusMinutes(1);
         }
         return member.getChangeAt().plusMinutes(1);
+    }
+
+    @Transactional
+    public Boolean logout(Long uid) {
+        refreshTokenRepository.deleteByKey(uid.toString());
+        return true;
     }
 
 //    public Long login(LoginDto login) {
@@ -91,6 +100,12 @@ public class AuthService {
 //
 //        return member.getId();
 //    }
+
+    public String getRefreshToken(Long uid) {
+        RefreshToken refreshToken = refreshTokenRepository.findByKey(uid.toString())
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "로그아웃 된 사용자입니다."));
+        return refreshToken.toString();
+    }
 
     public Boolean saveRefreshToken(Long loginId, String refreshToken) {
         RefreshToken rt = RefreshToken.builder()
