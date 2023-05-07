@@ -2,17 +2,18 @@ package com.list.WChatProject.controller;
 
 import com.list.WChatProject.entity.AccountType;
 import com.list.WChatProject.entity.Member;
+import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.security.jwt.MemberPrincipal;
 import com.list.WChatProject.service.AuthService;
 import com.list.WChatProject.service.JwtService;
 import com.list.WChatProject.service.KakaoAPIService;
 import com.list.WChatProject.service.UserDetailsServiceImpl;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 
 import static com.list.WChatProject.dto.KaKaoAuthDto.*;
 import static com.list.WChatProject.dto.MemberDto.*;
+import static com.list.WChatProject.dto.TokenDto.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,7 +56,7 @@ public class AuthController {
         return new KakaoLoginResponse(true, accessToken, refreshToken);
     }
 
-    @GetMapping("/myname")
+    @GetMapping("/info")
     public NickNameResponseDto myNickName(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         return new NickNameResponseDto(memberPrincipal.getMember().getNickName());
     }
@@ -63,6 +65,32 @@ public class AuthController {
     public LocalDateTime changeMyNickName(@AuthenticationPrincipal MemberPrincipal memberPrincipal, @RequestBody String nickName) {
         LocalDateTime localDateTime = authService.changeNickName(memberPrincipal.getMember().getId(), nickName);
         return localDateTime;
+    }
+
+    @PostMapping("/logout")
+    public TokenDeleteDto logout(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        if (memberPrincipal.getMember().getId() == null) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "인증되지 않은 유저입니다.");
+        }
+        Boolean logout = authService.logout(memberPrincipal.getMember().getId());
+        return new TokenDeleteDto(logout);
+    }
+
+    @PostMapping("/refresh")
+    public UseRefreshTokenResponseDto useRefreshToken(@RequestBody @Valid UseRefreshTokenRequestDto useRefreshTokenRequestDto) {
+        Claims claims = jwtService.decodeJwtToken(useRefreshTokenRequestDto.getRefreshToken());
+
+        if (!claims.getSubject().equals("refresh_token")) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "잘못된 요청입니다.");
+        }
+
+        if (authService.getRefreshToken(claims.get("uid", Long.class)) == null) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "잘못된 요청입니다.");
+        }
+
+        String accessToken = jwtService.createAccessToken(claims.get("uid", Long.class));
+
+        return new UseRefreshTokenResponseDto(true, accessToken);
     }
 
 //    @PostMapping("/register")
