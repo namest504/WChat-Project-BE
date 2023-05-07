@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 public class MemberDto {
 
 //    @Getter
@@ -92,6 +94,15 @@ public class MemberDto {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class NickNameResponseDto {
         private String nickName;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class ChangeNickNameResponseDto {
+        private boolean success;
+        private LocalDateTime changeAt;
     }
 
 
