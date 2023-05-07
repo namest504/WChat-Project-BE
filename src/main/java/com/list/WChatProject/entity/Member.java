@@ -6,6 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,13 +27,17 @@ public class Member implements UserDetails {
     @Column
     private String userId;
     @Column
-    private String socialId;
+    private String nickName;
+    @Column
+    private String name;
     @Column
     private String password;
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
     @Column
     private boolean isBan;
+    @Column
+    private LocalDateTime changeAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

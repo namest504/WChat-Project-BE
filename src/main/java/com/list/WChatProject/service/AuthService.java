@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 import static com.list.WChatProject.dto.MemberDto.*;
 
 @Service
@@ -22,8 +24,6 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
-
-    private final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);
 
     public boolean isRegisterdKakao(String userId) {
         return memberRepository.existsByUserIdAndAccountType(userId, AccountType.KAKAO);
@@ -43,16 +43,22 @@ public class AuthService {
         if (registerRequestDto.getAccountType() == AccountType.KAKAO) {
             Member member = Member.builder()
                     .userId(registerRequestDto.getUserId())
+                    .nickName(registerRequestDto.getNickName())
+                    .name(registerRequestDto.getNickName())
                     .isBan(false)
                     .accountType(AccountType.KAKAO)
+                    .changeAt(LocalDateTime.now())
                     .build();
             return memberRepository.save(member);
         } else {
             Member member = Member.builder()
                     .userId(registerRequestDto.getUserId())
+                    .nickName(registerRequestDto.getNickName())
+                    .name(registerRequestDto.getNickName())
                     .password(passwordEncoder.encode(registerRequestDto.getPassword()))
                     .isBan(false)
                     .accountType(AccountType.BASIC)
+                    .changeAt(LocalDateTime.now())
                     .build();
             return memberRepository.save(member);
         }
@@ -60,17 +66,17 @@ public class AuthService {
 
     }
 
-    public Long login(LoginDto login) {
-        Member member = memberRepository.findByUserId(login.getUserId())
-                .orElseThrow(
-                        () -> new CustomException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다."));
-
-        if (!passwordEncoder.matches(login.getPassword(), member.getPassword())) {
-            throw new CustomException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다.");
-        }
-
-        return member.getId();
-    }
+//    public Long login(LoginDto login) {
+//        Member member = memberRepository.findByUserId(login.getUserId())
+//                .orElseThrow(
+//                        () -> new CustomException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다."));
+//
+//        if (!passwordEncoder.matches(login.getPassword(), member.getPassword())) {
+//            throw new CustomException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다.");
+//        }
+//
+//        return member.getId();
+//    }
 
     public Boolean saveRefreshToken(Long loginId, String refreshToken) {
         RefreshToken rt = RefreshToken.builder()
@@ -82,26 +88,26 @@ public class AuthService {
         return true;
     }
 
-    public Member inquire(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(
-                        () -> new CustomException(HttpStatus.UNAUTHORIZED, "일치하는 유저가 없습니다."));
-        return member;
-    }
-
-    public Member updatePassword(Long uid, UpdatePasswordRequestDto updatePasswordRequestDto) {
-        Member member = memberRepository.findById(uid)
-                .orElseThrow(
-                        () -> new CustomException(HttpStatus.UNAUTHORIZED, "일치하는 유저가 없습니다."));
-        if (!passwordEncoder.matches(updatePasswordRequestDto.getRawPassword(), member.getPassword())) {
-            throw new CustomException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
-        }
-
-        String encodePassword = passwordEncoder.encode(updatePasswordRequestDto.getNewPassword());
-        member.setPassword(encodePassword);
-
-        Member result = memberRepository.save(member);
-
-        return result;
-    }
+//    public Member inquire(Long memberId) {
+//        Member member = memberRepository.findById(memberId)
+//                .orElseThrow(
+//                        () -> new CustomException(HttpStatus.UNAUTHORIZED, "일치하는 유저가 없습니다."));
+//        return member;
+//    }
+//
+//    public Member updatePassword(Long uid, UpdatePasswordRequestDto updatePasswordRequestDto) {
+//        Member member = memberRepository.findById(uid)
+//                .orElseThrow(
+//                        () -> new CustomException(HttpStatus.UNAUTHORIZED, "일치하는 유저가 없습니다."));
+//        if (!passwordEncoder.matches(updatePasswordRequestDto.getRawPassword(), member.getPassword())) {
+//            throw new CustomException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+//        }
+//
+//        String encodePassword = passwordEncoder.encode(updatePasswordRequestDto.getNewPassword());
+//        member.setPassword(encodePassword);
+//
+//        Member result = memberRepository.save(member);
+//
+//        return result;
+//    }
 }
