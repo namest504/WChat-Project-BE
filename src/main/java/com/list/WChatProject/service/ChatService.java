@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -48,6 +49,7 @@ public class ChatService {
         return chatRoomRepository.save(chatRoom);
     }
 
+    @Transactional
     public void countPeopleChatRoom(String roomId, String messageType) {
 //        ChatRoom chatRoom = chatRooms.get(roomId);
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
@@ -57,6 +59,10 @@ public class ChatService {
         } else if (messageType == "EXIT") {
             chatRoom.setCountPeople(chatRoom.getCountPeople() - 1);
             chatRoomRepository.save(chatRoom);
+
+            if (chatRoom.getCountPeople() == 0) {
+                chatRoomRepository.deleteById(roomId);
+            }
         } else {
             throw new CustomException(HttpStatus.BAD_REQUEST, "메세지 타입 지정이 되어야 합니다.");
         }
