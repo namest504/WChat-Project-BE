@@ -73,14 +73,14 @@ public class AuthService {
         if (memberRepository.existsByNickName(nickName)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 존재하는 닉네임입니다.");
         }
-        // 닉네임 변경 시간이 1분이 지났으면
-        if (LocalDateTime.now().isAfter(member.getChangeAt().plusMinutes(1))) {
-            member.setNickName(nickName);
-            member.setChangeAt(LocalDateTime.now());
-            memberRepository.save(member);
-            return new ChangeNickNameResponseDto(true, member.getChangeAt().plusMinutes(1));
+
+        if (LocalDateTime.now().isBefore(member.getChangeAt().plusMinutes(1))) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "닉네임 변경 쿨타임입니다.");
         }
-        return new ChangeNickNameResponseDto(false, member.getChangeAt().plusMinutes(1));
+        member.setNickName(nickName);
+        member.setChangeAt(LocalDateTime.now());
+        memberRepository.save(member);
+        return new ChangeNickNameResponseDto(true, member.getChangeAt().plusMinutes(1));
     }
 
     @Transactional
