@@ -44,7 +44,12 @@ public class ChatService {
 
     //채팅방 생성
     public ChatRoom createRoom(String name) {
-        ChatRoom chatRoom = ChatRoom.create(name);
+//        ChatRoom chatRoom = ChatRoom.create(name);
+        ChatRoom chatRoom = ChatRoom.builder()
+                .roomName(name)
+                .roomId(UUID.randomUUID().toString())
+                .countPeople(0)
+                .build();
 //        chatRooms.put(chatRoom.getRoomId(), chatRoom);
         return chatRoomRepository.save(chatRoom);
     }

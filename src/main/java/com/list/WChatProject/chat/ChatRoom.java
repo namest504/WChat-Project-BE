@@ -26,11 +26,11 @@ public class ChatRoom {
     private int countPeople;
 
 
-    public static ChatRoom create(String name) {
-        ChatRoom room = new ChatRoom();
-        room.roomId = UUID.randomUUID().toString();
-        room.roomName = name;
-        room.countPeople = 0;
-        return room;
-    }
+//    public static ChatRoom create(String name) {
+//        ChatRoom room = new ChatRoom();
+//        room.roomId = UUID.randomUUID().toString();
+//        room.roomName = name;
+//        room.countPeople = 0;
+//        return room;
+//    }
 }
