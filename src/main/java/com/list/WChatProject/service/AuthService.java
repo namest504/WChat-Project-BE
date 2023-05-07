@@ -25,12 +25,12 @@ public class AuthService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);
 
-    public boolean isRegisterdKakao(String kakaoId) {
-        return memberRepository.existsBySocialIdAndAccountType(kakaoId, AccountType.KAKAO);
+    public boolean isRegisterdKakao(String userId) {
+        return memberRepository.existsByUserIdAndAccountType(userId, AccountType.KAKAO);
     }
 
-    public Long getUidFromKakaoAccount(String kakaoId) {
-        return memberRepository.findBySocialIdAndAccountType(kakaoId, AccountType.KAKAO)
+    public Long getUidFromKakaoAccount(String userId) {
+        return memberRepository.findByUserIdAndAccountType(userId, AccountType.KAKAO)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "kakao로 로그인된 아이디가 없습니다."))
                 .getId();
     }
@@ -42,7 +42,7 @@ public class AuthService {
 
         if (registerRequestDto.getAccountType() == AccountType.KAKAO) {
             Member member = Member.builder()
-                    .socialId(registerRequestDto.getUserId())
+                    .userId(registerRequestDto.getUserId())
                     .isBan(false)
                     .accountType(AccountType.KAKAO)
                     .build();
