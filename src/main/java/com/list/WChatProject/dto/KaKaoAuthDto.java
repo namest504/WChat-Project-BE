@@ -56,7 +56,6 @@ public class KaKaoAuthDto {
 		private Boolean success;
 		private String accessToken;
 		private String refreshToken;
-		private String registerKakaoAccountToken;
 	}
 
 }

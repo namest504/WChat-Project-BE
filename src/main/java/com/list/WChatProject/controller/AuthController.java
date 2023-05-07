@@ -41,18 +41,13 @@ public class AuthController {
 
         String kakaoId = kakaoAccountInformationRequestResponse.getId();
 
-        if (!authService.isRegisterdKakao(kakaoId)) {
-            String registerKakaoAccountToken = jwtService.createSocialAccountRegisterToken(kakaoId, AccountType.KAKAO);
-            return new KakaoLoginResponse(false, null, null, registerKakaoAccountToken);
-        }
-
         Long uid = authService.getUidFromKakaoAccount(kakaoId);
         String accessToken = jwtService.createAccessToken(uid);
         String refreshToken = jwtService.createRefreshToken(uid);
 
         authService.saveRefreshToken(uid, refreshToken);
 
-        return new KakaoLoginResponse(true, accessToken, refreshToken, null);
+        return new KakaoLoginResponse(true, accessToken, refreshToken);
     }
 
     @PostMapping("/register")
