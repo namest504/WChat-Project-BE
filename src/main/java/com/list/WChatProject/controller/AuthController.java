@@ -43,7 +43,7 @@ public class AuthController {
         KakaoAccountInformationRequestResponse kakaoAccountInformationRequestResponse = kakaoAPIService
                 .getKakaoAccountInformation(kakaoAccountToken);
 
-        if (!authService.isRegisterdKakao(kakaoAccountInformationRequestResponse.getKakao_account().getEmail())) {
+        if (!authService.isRegisterdKakao(kakaoAccountInformationRequestResponse.getId())) {
             authService.register(new RegisterRequestDto(kakaoAccountInformationRequestResponse.getId(), kakaoAccountInformationRequestResponse.getKakao_account().getEmail(), kakaoAccountInformationRequestResponse.getKakao_account().getProfile().getNickname(), null, AccountType.KAKAO));
         }
 
