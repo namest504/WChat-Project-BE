@@ -1,5 +1,6 @@
 package com.list.WChatProject.service;
 
+import com.list.WChatProject.entity.AccountType;
 import com.list.WChatProject.entity.Member;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.repository.MemberRepository;
@@ -66,28 +67,13 @@ public class JwtService {
 	}
 
 	public UsernamePasswordAuthenticationToken getAuthentication(String token) {
-		LOGGER.info("[JwtService] getAuthentication 시작");
-//		Long uid = getUidFromToken(sliceToken(token));
 		Long uid = getUidFromToken(token);
-		LOGGER.info("[JwtService] getUidFromToken 의 결과 : {}", uid);
 		Member member = memberRepository.findById(uid)
 				.orElseThrow(() -> new RuntimeException("Member 를 찾지 못했습니다."));
 		MemberPrincipal memberPrincipal = new MemberPrincipal(member);
 		return new UsernamePasswordAuthenticationToken(memberPrincipal, token,
 				member.getAuthorities());
 	}
-
-//	public String sliceToken(String token) {
-//		LOGGER.info("[JwtService] sliceToken 시작");
-//		String slicedToken = null;
-//		if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
-//			slicedToken = token.substring(7);
-//		} else {
-//			throw new CustomException(HttpStatus.BAD_REQUEST, "토큰 값이 잘못 전달되었습니다.");
-//		}
-//		LOGGER.info("[JwtService] sliceToken 의 결과 : {}", slicedToken);
-//		return slicedToken;
-//	}
 
 	public Long getUidFromToken(String token) {
 		return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody()
@@ -104,6 +90,20 @@ public class JwtService {
 		} catch (Exception e) {
 			throw new CustomException(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다.");
 		}
+	}
+
+	public String createSocialAccountRegisterToken(String socialId, AccountType accountType) {
+		Claims claims = Jwts.claims().setSubject("accountRegisterToken");
+		claims.put("socialId", socialId);
+		claims.put("accountType", accountType.getValue());
+		Date currentTime = new Date();
+
+		return Jwts.builder()
+				.setClaims(claims)
+				.setIssuedAt(currentTime)
+				.setExpiration(new Date(currentTime.getTime() + 100000000000L))
+				.signWith(secretKey, SignatureAlgorithm.HS256)
+				.compact();
 	}
 
 	public Claims decodeJwtToken(String token) {
