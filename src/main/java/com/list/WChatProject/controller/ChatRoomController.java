@@ -5,6 +5,8 @@ import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.security.jwt.MemberPrincipal;
 import com.list.WChatProject.service.ChatService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequestMapping("/chat")
 public class ChatRoomController {
     private final ChatService chatService;
+    private final Logger LOGGER = LoggerFactory.getLogger(ChatRoomController.class);
 
     // 모든 채팅방 목록 반환
     @GetMapping("/rooms")
@@ -30,8 +33,8 @@ public class ChatRoomController {
 
     // 채팅방 생성
     @PostMapping("/create")
-    public ChatRoom createRoom(@RequestBody String name) {
-
+    public ChatRoom createRoom(@AuthenticationPrincipal MemberPrincipal memberPrincipal,@RequestBody String name) {
+        LOGGER.info("[{}] 님이 [{}] 방을 생성하였습니다.", memberPrincipal.getMember().getName(), name);
         return chatService.createRoom(name);
     }
 

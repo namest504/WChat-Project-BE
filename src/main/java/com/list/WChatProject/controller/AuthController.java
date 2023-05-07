@@ -52,7 +52,7 @@ public class AuthController {
         String refreshToken = jwtService.createRefreshToken(uid);
 
         authService.saveRefreshToken(uid, refreshToken);
-        LOGGER.info("{} 님이 로그인 하셨습니다.", kakaoAccountInformationRequestResponse.getKakao_account().getProfile().getNickname());
+        LOGGER.info("[{}] 님이 로그인 하셨습니다.", kakaoAccountInformationRequestResponse.getKakao_account().getProfile().getNickname());
         return new KakaoLoginResponse(true, accessToken, refreshToken);
     }
 
