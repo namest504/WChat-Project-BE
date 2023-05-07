@@ -44,11 +44,11 @@ public class ChatService {
         return chatRoom;
     }
 
-    public void countPeopleChatRoom(String roomId, MessageType messageType) {
+    public void countPeopleChatRoom(String roomId, String messageType) {
         ChatRoom chatRoom = chatRooms.get(roomId);
-        if (messageType.getValue().equals("ENTER")){
+        if (messageType == "ENTER"){
             chatRoom.setCountPeople(chatRoom.getCountPeople() + 1);
-        } else if (messageType.getValue().equals("EXIT")) {
+        } else if (messageType == "EXIT") {
             chatRoom.setCountPeople(chatRoom.getCountPeople() - 1);
         } else {
             throw new CustomException(HttpStatus.BAD_REQUEST, "메세지 타입 지정이 되어야 합니다.");
