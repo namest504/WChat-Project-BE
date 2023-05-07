@@ -58,11 +58,10 @@ public class ChatService {
             chatRoomRepository.save(chatRoom);
         } else if (messageType == "EXIT") {
             chatRoom.setCountPeople(chatRoom.getCountPeople() - 1);
-            chatRoomRepository.save(chatRoom);
-
             if (chatRoom.getCountPeople() == 0) {
                 chatRoomRepository.deleteById(roomId);
             }
+            chatRoomRepository.save(chatRoom);
         } else {
             throw new CustomException(HttpStatus.BAD_REQUEST, "메세지 타입 지정이 되어야 합니다.");
         }
