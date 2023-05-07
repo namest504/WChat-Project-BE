@@ -1,10 +1,11 @@
 package com.list.WChatProject.controller;
 
-import com.list.WChatProject.dto.MemberDto;
+import com.list.WChatProject.entity.AccountType;
 import com.list.WChatProject.entity.Member;
 import com.list.WChatProject.security.jwt.MemberPrincipal;
 import com.list.WChatProject.service.AuthService;
 import com.list.WChatProject.service.JwtService;
+import com.list.WChatProject.service.KakaoAPIService;
 import com.list.WChatProject.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -16,22 +17,48 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.list.WChatProject.dto.KaKaoAuthDto.*;
 import static com.list.WChatProject.dto.MemberDto.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsService;
+    private final KakaoAPIService kakaoAPIService;
 
     private final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
+
+    @GetMapping("/kakao/callback")
+    public KakaoLoginResponse kakaoLogin(@RequestParam("code") String code) {
+        String kakaoAccountToken = kakaoAPIService.getKakaoAccountAccessToken(code);
+
+        KakaoAccountInformationRequestResponse kakaoAccountInformationRequestResponse = kakaoAPIService
+                .getKakaoAccountInformation(kakaoAccountToken);
+
+        String kakaoId = kakaoAccountInformationRequestResponse.getId();
+
+        if (!authService.isRegisterdKakao(kakaoId)) {
+            String registerKakaoAccountToken = jwtService.createSocialAccountRegisterToken(kakaoId, AccountType.KAKAO);
+            return new KakaoLoginResponse(false, null, null, registerKakaoAccountToken);
+        }
+
+        Long uid = authService.getUidFromKakaoAccount(kakaoId);
+        String accessToken = jwtService.createAccessToken(uid);
+        String refreshToken = jwtService.createRefreshToken(uid);
+
+        authService.saveRefreshToken(uid, refreshToken);
+
+        return new KakaoLoginResponse(true, accessToken, refreshToken, null);
+    }
 
     @PostMapping("/register")
     public RegisterResponseDto register(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
         Member member = authService.register(registerRequestDto);
-        return new RegisterResponseDto(true, member.getName());
+        return new RegisterResponseDto(true, member.getUserId());
     }
 
     @PostMapping("/login")
@@ -47,7 +74,7 @@ public class AuthController {
     public MemberResponseDto inquire(@PathVariable @Valid Long memberId) {
         System.out.println("memberId = " + memberId);
         System.out.println("inquire [memberId] 대상으로 실행");
-        return new MemberResponseDto(true, authService.inquire(memberId).getName());
+        return new MemberResponseDto(true, authService.inquire(memberId).getUserId());
     }
 
 
@@ -66,19 +93,19 @@ public class AuthController {
 
     @GetMapping("/test/non")
     public TestResponseDto testAuthNon(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        return new TestResponseDto(true, memberPrincipal.getMember().getName());
+        return new TestResponseDto(true, memberPrincipal.getMember().getUserId());
     }
 
     @GetMapping("/test/user")
     @Secured("ROLE_USER")
     public TestResponseDto testAuthUser(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        return new TestResponseDto(true, memberPrincipal.getMember().getName());
+        return new TestResponseDto(true, memberPrincipal.getMember().getUserId());
     }
 
     @PutMapping("/password")
     public MemberResponseDto updatePassword(@AuthenticationPrincipal MemberPrincipal memberPrincipal,@RequestBody UpdatePasswordRequestDto updatePasswordRequestDto) {
         LOGGER.info("[AuthController] userInfoPrincipal.getMember().getId() = {}", memberPrincipal.getMember().getId());
         Member member = authService.updatePassword(memberPrincipal.getMember().getId(), updatePasswordRequestDto);
-        return new MemberResponseDto(true, member.getName());
+        return new MemberResponseDto(true, member.getUserId());
     }
 }
