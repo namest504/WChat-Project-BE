@@ -10,9 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMessage {
-    public enum MessageType {
-        ENTER, TALK, EXIT
-    }
+
 
     private MessageType type;
     //채팅방 ID

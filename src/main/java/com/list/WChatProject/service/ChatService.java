@@ -1,6 +1,7 @@
 package com.list.WChatProject.service;
 
 import com.list.WChatProject.chat.ChatRoom;
+import com.list.WChatProject.chat.MessageType;
 import com.list.WChatProject.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
-
-import static com.list.WChatProject.chat.ChatMessage.*;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -48,9 +46,9 @@ public class ChatService {
 
     public void countPeopleChatRoom(String roomId, MessageType messageType) {
         ChatRoom chatRoom = chatRooms.get(roomId);
-        if (messageType.equals("ENTER")){
+        if (messageType.getValue().equals("ENTER")){
             chatRoom.setCountPeople(chatRoom.getCountPeople() + 1);
-        } else if (messageType.equals("EXIT")) {
+        } else if (messageType.getValue().equals("EXIT")) {
             chatRoom.setCountPeople(chatRoom.getCountPeople() - 1);
         } else {
             throw new CustomException(HttpStatus.BAD_REQUEST, "메세지 타입 지정이 되어야 합니다.");
