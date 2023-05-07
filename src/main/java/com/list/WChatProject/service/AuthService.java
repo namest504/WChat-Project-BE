@@ -66,7 +66,7 @@ public class AuthService {
     }
 
     @Transactional
-    public LocalDateTime changeNickName(Long uId, String nickName) {
+    public ChangeNickNameResponseDto changeNickName(Long uId, String nickName) {
         Member member = memberRepository.findById(uId)
                 .orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "로그인이 필요한 기능입니다."));
 
@@ -78,9 +78,9 @@ public class AuthService {
             member.setNickName(nickName);
             member.setChangeAt(LocalDateTime.now());
             memberRepository.save(member);
-            return member.getChangeAt().plusMinutes(1);
+            return new ChangeNickNameResponseDto(true, member.getChangeAt().plusMinutes(1));
         }
-        return member.getChangeAt().plusMinutes(1);
+        return new ChangeNickNameResponseDto(false, member.getChangeAt().plusMinutes(1));
     }
 
     @Transactional

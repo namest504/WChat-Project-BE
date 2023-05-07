@@ -62,9 +62,8 @@ public class AuthController {
     }
 
     @PutMapping("/change")
-    public LocalDateTime changeMyNickName(@AuthenticationPrincipal MemberPrincipal memberPrincipal, @RequestBody String nickName) {
-        LocalDateTime localDateTime = authService.changeNickName(memberPrincipal.getMember().getId(), nickName);
-        return localDateTime;
+    public ChangeNickNameResponseDto changeMyNickName(@AuthenticationPrincipal MemberPrincipal memberPrincipal, @RequestBody String nickName) {
+        return authService.changeNickName(memberPrincipal.getMember().getId(), nickName);
     }
 
     @PostMapping("/logout")
