@@ -23,9 +23,13 @@ public class Member implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String userId;
+
+    private String socialId;
 
     private String password;
+
+    private AccountType accountType;
 
     private boolean isBan;
 
@@ -44,7 +48,7 @@ public class Member implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.name;
+        return this.userId;
     }
 
     @Override

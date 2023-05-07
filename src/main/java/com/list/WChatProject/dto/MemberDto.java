@@ -13,7 +13,7 @@ public class MemberDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class LoginDto {
-        private String name;
+        private String userId;
         private String password;
     }
 
@@ -34,7 +34,7 @@ public class MemberDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RegisterRequestDto {
-        private String name;
+        private String userId;
         private String password;
     }
 
@@ -44,7 +44,7 @@ public class MemberDto {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class RegisterResponseDto {
         private Boolean success;
-        private String name;
+        private String userId;
     }
 
     @Getter
@@ -52,7 +52,7 @@ public class MemberDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class InquireRequestDto {
-        private String name;
+        private String userId;
     }
 
     @Getter
@@ -61,7 +61,7 @@ public class MemberDto {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class MemberResponseDto {
         private Boolean success;
-        private String name;
+        private String userId;
     }
 
     @Getter
@@ -79,7 +79,7 @@ public class MemberDto {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class TestResponseDto {
         private Boolean success;
-        private String name;
+        private String userId;
     }
 
 
