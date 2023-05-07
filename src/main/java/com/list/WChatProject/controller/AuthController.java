@@ -54,6 +54,11 @@ public class AuthController {
         return new KakaoLoginResponse(true, accessToken, refreshToken);
     }
 
+    @GetMapping("/myname")
+    public NickNameResponseDto myNickName(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        return new NickNameResponseDto(memberPrincipal.getMember().getNickName());
+    }
+
     @PutMapping("/change")
     public LocalDateTime changeMyNickName(@AuthenticationPrincipal MemberPrincipal memberPrincipal, @RequestBody String nickName) {
         LocalDateTime localDateTime = authService.changeNickName(memberPrincipal.getMember().getId(), nickName);
