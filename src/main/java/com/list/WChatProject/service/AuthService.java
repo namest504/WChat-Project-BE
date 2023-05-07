@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -42,8 +43,8 @@ public class AuthService {
 
         if (registerRequestDto.getAccountType() == AccountType.KAKAO) {
             Member member = Member.builder()
-                    .userId(registerRequestDto.getUserId())
-                    .nickName(registerRequestDto.getNickName())
+                    .userId(registerRequestDto.getId())
+                    .nickName(registerRequestDto.getId())
                     .name(registerRequestDto.getNickName())
                     .isBan(false)
                     .accountType(AccountType.KAKAO)
@@ -52,8 +53,8 @@ public class AuthService {
             return memberRepository.save(member);
         } else {
             Member member = Member.builder()
-                    .userId(registerRequestDto.getUserId())
-                    .nickName(registerRequestDto.getNickName())
+                    .userId(registerRequestDto.getId())
+                    .nickName(registerRequestDto.getId())
                     .name(registerRequestDto.getNickName())
                     .password(passwordEncoder.encode(registerRequestDto.getPassword()))
                     .isBan(false)
@@ -62,8 +63,21 @@ public class AuthService {
                     .build();
             return memberRepository.save(member);
         }
+    }
 
+    @Transactional
+    public LocalDateTime changeNickName(Long uId, String nickName) {
+        Member member = memberRepository.findById(uId)
+                .orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "로그인이 필요한 기능입니다."));
 
+        // 닉네임 변경 시간이 1분이 지났으면
+        if (member.getChangeAt().isAfter(member.getChangeAt().plusMinutes(1))) {
+            member.setNickName(nickName);
+            member.setChangeAt(LocalDateTime.now());
+            memberRepository.save(member);
+            return member.getChangeAt().plusMinutes(1);
+        }
+        return member.getChangeAt().plusMinutes(1);
     }
 
 //    public Long login(LoginDto login) {

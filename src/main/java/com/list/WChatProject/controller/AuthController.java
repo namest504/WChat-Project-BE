@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.time.LocalDateTime;
+
 import static com.list.WChatProject.dto.KaKaoAuthDto.*;
 import static com.list.WChatProject.dto.MemberDto.*;
 
@@ -40,16 +42,22 @@ public class AuthController {
                 .getKakaoAccountInformation(kakaoAccountToken);
 
         if (!authService.isRegisterdKakao(kakaoAccountInformationRequestResponse.getKakao_account().getEmail())) {
-            authService.register(new RegisterRequestDto(kakaoAccountInformationRequestResponse.getKakao_account().getEmail(),kakaoAccountInformationRequestResponse.getKakao_account().getProfile().getNickname(), null, AccountType.KAKAO));
+            authService.register(new RegisterRequestDto(kakaoAccountInformationRequestResponse.getId(), kakaoAccountInformationRequestResponse.getKakao_account().getEmail(), kakaoAccountInformationRequestResponse.getKakao_account().getProfile().getNickname(), null, AccountType.KAKAO));
         }
 
-        Long uid = authService.getUidFromKakaoAccount(kakaoAccountInformationRequestResponse.getKakao_account().getEmail());
+        Long uid = authService.getUidFromKakaoAccount(kakaoAccountInformationRequestResponse.getId());
         String accessToken = jwtService.createAccessToken(uid);
         String refreshToken = jwtService.createRefreshToken(uid);
 
         authService.saveRefreshToken(uid, refreshToken);
 
         return new KakaoLoginResponse(true, accessToken, refreshToken);
+    }
+
+    @PutMapping("/change")
+    public LocalDateTime changeMyNickName(@AuthenticationPrincipal MemberPrincipal memberPrincipal, @RequestBody String nickName) {
+        LocalDateTime localDateTime = authService.changeNickName(memberPrincipal.getMember().getId(), nickName);
+        return localDateTime;
     }
 
 //    @PostMapping("/register")

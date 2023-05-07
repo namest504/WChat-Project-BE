@@ -35,6 +35,7 @@ public class MemberDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RegisterRequestDto {
+        private String Id;
         private String userId;
         private String NickName;
         private String password;
