@@ -59,7 +59,6 @@ public class ChatRoomDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ChatRoomRequestDto {
-        private String roomId;
         private String roomPassword;
     }
 
