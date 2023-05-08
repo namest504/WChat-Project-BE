@@ -44,7 +44,7 @@ public class ChatService {
 
     public ChatRoomPageResponseDto pageChatRoom(int page) {
         PageRequest pageRequest = PageRequest.of(page, 8, Sort.Direction.DESC, "createAt");
-        Page<ChatRoom> pageChatRoom = chatRoomRepository.findAllPage(pageRequest);
+        Page<ChatRoom> pageChatRoom = chatRoomRepository.findAll(pageRequest);
         return getChatRoomPageResponseDto(pageChatRoom);
     }
 
