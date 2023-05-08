@@ -45,16 +45,20 @@ public class ChatRoomController {
 
     // 채팅방 생성
     @PostMapping("/create")
-    public ChatRoomResponseDto createRoom(@AuthenticationPrincipal MemberPrincipal memberPrincipal,@RequestBody String name) {
-        LOGGER.info("[{}] 님이 [{}] 방을 생성하였습니다.", memberPrincipal.getMember().getName(), name);
-        ChatRoom room = chatService.createRoom(name);
-        return new ChatRoomResponseDto(room.getRoomId(), room.getRoomName(), room.getCountPeople());
+    public ChatRoomResponseDto createRoom(@AuthenticationPrincipal MemberPrincipal memberPrincipal,@RequestBody ChatRoomCreateRequestDto chatRoomCreateRequestDto) {
+        LOGGER.info("[{}] 님이 [{}] 방을 생성하였습니다.", memberPrincipal.getMember().getName(), chatRoomCreateRequestDto.getMaxPeople());
+        ChatRoom room = chatService.createRoom(chatRoomCreateRequestDto);
+        return new ChatRoomResponseDto(room.getRoomId(), room.getRoomName(), room.getCountPeople(), room.getMaxPeople(), room.isSecret());
     }
 
-    // 특정 채팅방 조회
-//    @GetMapping("/room/{roomId}")
-//    public ChatRoom roomInfo(@PathVariable String roomId) {
-//
-//        return chatService.findById(roomId);
-//    }
+    //특정 채팅방 조회
+    @GetMapping("/room/{roomName}")
+    public ChatRoomResponseDtos findRoomName(@PathVariable String roomName) {
+        List<ChatRoom> chatRooms = chatService.findRoomByRoomName(roomName);
+        List<ChatRoomResponseDto> resultList = chatRooms
+                .stream()
+                .map(list -> modelMapper.map(list, ChatRoomResponseDto.class))
+                .collect(Collectors.toList());
+        return new ChatRoomResponseDtos(true,resultList);
+    }
 }
