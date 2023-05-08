@@ -65,7 +65,7 @@ public class ChatService {
     //채팅방 생성
     public ChatRoom createRoom(ChatRoomCreateRequestDto chatRoomCreateRequestDto) {
 //        ChatRoom chatRoom = ChatRoom.create(name);
-        if (chatRoomCreateRequestDto.isSecret() == false) {
+        if (!chatRoomCreateRequestDto.isSecret()) {
             ChatRoom chatRoom = ChatRoom.builder()
                     .roomName(chatRoomCreateRequestDto.getName())
                     .roomId(UUID.randomUUID().toString())
@@ -76,7 +76,7 @@ public class ChatService {
                     .build();
 
             return chatRoomRepository.save(chatRoom);
-        } else if (chatRoomCreateRequestDto.isSecret() == true && chatRoomCreateRequestDto.getPassword() != null) {
+        } else if (chatRoomCreateRequestDto.getPassword() != null) {
             ChatRoom chatRoom = ChatRoom.builder()
                     .roomName(chatRoomCreateRequestDto.getName())
                     .roomId(UUID.randomUUID().toString())
