@@ -53,6 +53,15 @@ public class ChatRoomController {
     @PostMapping("/create")
     public ChatRoomResponseDto createRoom(@AuthenticationPrincipal MemberPrincipal memberPrincipal,@RequestBody @Valid ChatRoomCreateRequestDto chatRoomCreateRequestDto) {
         LOGGER.info("[{}] 님이 [{}] 방을 최대인원 [{}]으로 생성하였습니다.", memberPrincipal.getMember().getName(), chatRoomCreateRequestDto.getRoomName(), chatRoomCreateRequestDto.getMaxPeople());
+        if (chatRoomCreateRequestDto.isSecret() && chatRoomCreateRequestDto.getRoomPassword() == null) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "비밀방은 비밀번호가 필수입니다.");
+        }
+        if (chatRoomCreateRequestDto.getRoomName().length() > 20) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "방 제목 길이가 너무 깁니다.");
+        }
+        if (chatRoomCreateRequestDto.getMaxPeople() > 10 || chatRoomCreateRequestDto.getMaxPeople() <= 1) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "최대 인원수가 허용 범위가 아닙니다.");
+        }
         ChatRoom room = chatService.createRoom(chatRoomCreateRequestDto);
         return new ChatRoomResponseDto(room.getRoomId(), room.getRoomName(), room.getCountPeople(), room.getMaxPeople(), room.isSecret());
     }
