@@ -1,6 +1,6 @@
 package com.list.WChatProject.controller;
 
-import com.list.WChatProject.chat.ChatRoom;
+import com.list.WChatProject.entity.ChatRoom;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.security.jwt.MemberPrincipal;
 import com.list.WChatProject.service.ChatService;
@@ -43,6 +43,11 @@ public class ChatRoomController {
         return new ChatRoomResponseDtos(true ,resultList);
     }
 
+    @GetMapping("/rooms/p/{page}")
+    public ChatRoomPageResponseDto pageRoom(@PathVariable int page) {
+        return chatService.pageChatRoom(page);
+    }
+
     // 채팅방 생성
     @PostMapping("/create")
     public ChatRoomResponseDto createRoom(@AuthenticationPrincipal MemberPrincipal memberPrincipal,@RequestBody ChatRoomCreateRequestDto chatRoomCreateRequestDto) {
@@ -52,8 +57,8 @@ public class ChatRoomController {
     }
 
     //특정 채팅방 조회
-    @GetMapping("/room/{roomName}")
-    public ChatRoomResponseDtos findRoomName(@PathVariable String roomName) {
+    @GetMapping("/room")
+    public ChatRoomResponseDtos findRoomName(@RequestParam String roomName) {
         List<ChatRoom> chatRooms = chatService.findRoomByRoomName(roomName);
         List<ChatRoomResponseDto> resultList = chatRooms
                 .stream()
