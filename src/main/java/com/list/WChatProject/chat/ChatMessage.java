@@ -11,7 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ChatMessage {
 
-
     private MessageType type;
     //채팅방 ID
     private String roomId;
