@@ -36,7 +36,7 @@ public class ChatRoomDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ChatRoomCreateRequestDto {
-        private String name;
+        private String roomName;
         private String password;
         private int maxPeople;
         private boolean isSecret;
