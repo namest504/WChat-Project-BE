@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,15 +51,15 @@ public class ChatRoomController {
 
     // 채팅방 생성
     @PostMapping("/create")
-    public ChatRoomResponseDto createRoom(@AuthenticationPrincipal MemberPrincipal memberPrincipal,@RequestBody ChatRoomCreateRequestDto chatRoomCreateRequestDto) {
-        LOGGER.info("[{}] 님이 [{}] 방을 생성하였습니다.", memberPrincipal.getMember().getName(), chatRoomCreateRequestDto.getMaxPeople());
+    public ChatRoomResponseDto createRoom(@AuthenticationPrincipal MemberPrincipal memberPrincipal,@RequestBody @Valid ChatRoomCreateRequestDto chatRoomCreateRequestDto) {
+        LOGGER.info("[{}] 님이 [{}] 방을 최대인원 [{}]으로 생성하였습니다.", memberPrincipal.getMember().getName(), chatRoomCreateRequestDto.getRoomName(), chatRoomCreateRequestDto.getMaxPeople());
         ChatRoom room = chatService.createRoom(chatRoomCreateRequestDto);
         return new ChatRoomResponseDto(room.getRoomId(), room.getRoomName(), room.getCountPeople(), room.getMaxPeople(), room.isSecret());
     }
 
     //특정 채팅방 조회
     @GetMapping("/room")
-    public ChatRoomResponseDtoList findRoomName(@RequestParam String roomName) {
+    public ChatRoomResponseDtoList findRoomName(@RequestParam @Valid String roomName) {
         List<ChatRoom> chatRooms = chatService.findRoomByRoomName(roomName);
         List<ChatRoomResponseDto> resultList = chatRooms
                 .stream()
