@@ -38,6 +38,10 @@ public class ChatService {
         //채팅방 최근 생성 순으로 반환
 //        List<ChatRoom> result = new ArrayList<>(chatRooms.values());
         List<ChatRoom> result = chatRoomRepository.findAll();
+
+        if (result.isEmpty()) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "채팅방이 없습니다.");
+        }
 //        Collections.reverse(result);
 
         return result;
