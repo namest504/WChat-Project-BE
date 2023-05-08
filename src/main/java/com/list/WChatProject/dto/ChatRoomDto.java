@@ -28,7 +28,7 @@ public class ChatRoomDto {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class ChatRoomResponseDtos {
         private boolean success;
-        private List<ChatRoomResponseDto> chatRoomResponseDtos;
+        private List<ChatRoomResponseDto> chatRoomResponseDtoList;
     }
 
     @Getter
@@ -40,6 +40,18 @@ public class ChatRoomDto {
         private String password;
         private int maxPeople;
         private boolean isSecret;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class ChatRoomPageResponseDto {
+
+        private boolean success;
+        private List<ChatRoomResponseDto> chatRoomResponseDtoList;
+        private int chatRoomTotalPages;
+        private Long chatRoomTotalElements;
     }
 
 
