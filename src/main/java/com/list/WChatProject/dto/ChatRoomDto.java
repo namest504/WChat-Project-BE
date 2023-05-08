@@ -26,7 +26,7 @@ public class ChatRoomDto {
     @Setter
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class ChatRoomResponseDtos {
+    public static class ChatRoomResponseDtoList {
         private boolean success;
         private List<ChatRoomResponseDto> chatRoomResponseDtoList;
     }

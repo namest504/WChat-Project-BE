@@ -28,7 +28,7 @@ public class ChatRoomController {
 
     // 모든 채팅방 목록 반환
     @GetMapping("/rooms")
-    public ChatRoomResponseDtos room(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+    public ChatRoomResponseDtoList room(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
 
         if (memberPrincipal.getMember().getNickName() == null) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "닉네임이 설정되지 않았습니다.");
@@ -40,7 +40,7 @@ public class ChatRoomController {
                 .map(list -> modelMapper.map(list, ChatRoomResponseDto.class))
                 .collect(Collectors.toList());
 
-        return new ChatRoomResponseDtos(true ,resultList);
+        return new ChatRoomResponseDtoList(true ,resultList);
     }
 
     @GetMapping("/rooms/p/{page}")
@@ -58,12 +58,12 @@ public class ChatRoomController {
 
     //특정 채팅방 조회
     @GetMapping("/room")
-    public ChatRoomResponseDtos findRoomName(@RequestParam String roomName) {
+    public ChatRoomResponseDtoList findRoomName(@RequestParam String roomName) {
         List<ChatRoom> chatRooms = chatService.findRoomByRoomName(roomName);
         List<ChatRoomResponseDto> resultList = chatRooms
                 .stream()
                 .map(list -> modelMapper.map(list, ChatRoomResponseDto.class))
                 .collect(Collectors.toList());
-        return new ChatRoomResponseDtos(true,resultList);
+        return new ChatRoomResponseDtoList(true,resultList);
     }
 }
