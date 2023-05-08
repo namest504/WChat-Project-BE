@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.list.WChatProject.dto.ChatRoomDto.*;
@@ -71,6 +72,7 @@ public class ChatService {
                     .maxPeople(chatRoomCreateRequestDto.getMaxPeople())
                     .isSecret(chatRoomCreateRequestDto.isSecret())
                     .countPeople(0)
+                    .createAt(LocalDateTime.now())
                     .build();
 
             return chatRoomRepository.save(chatRoom);
@@ -82,6 +84,7 @@ public class ChatService {
                     .isSecret(chatRoomCreateRequestDto.isSecret())
                     .password(passwordEncoder.encode(chatRoomCreateRequestDto.getPassword()))
                     .countPeople(0)
+                    .createAt(LocalDateTime.now())
                     .build();
 
             return chatRoomRepository.save(chatRoom);
