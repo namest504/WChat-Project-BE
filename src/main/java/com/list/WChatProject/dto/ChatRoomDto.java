@@ -54,5 +54,14 @@ public class ChatRoomDto {
         private Long chatRoomTotalElements;
     }
 
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ChatRoomRequestDto {
+        private String roomId;
+        private String roomPassword;
+    }
+
 
 }
