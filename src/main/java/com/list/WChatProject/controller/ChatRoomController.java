@@ -56,8 +56,8 @@ public class ChatRoomController {
         if (chatRoomCreateRequestDto.isSecret() && chatRoomCreateRequestDto.getRoomPassword() == null) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "비밀방은 비밀번호가 필수입니다.");
         }
-        if (chatRoomCreateRequestDto.getRoomName().length() > 20) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "방 제목 길이가 너무 깁니다.");
+        if (chatRoomCreateRequestDto.getRoomName().length() > 20 || chatRoomCreateRequestDto.getRoomName() == null) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "방 제목 형식이 올바르지 않습니다.");
         }
         if (chatRoomCreateRequestDto.getMaxPeople() > 10 || chatRoomCreateRequestDto.getMaxPeople() <= 1) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "최대 인원수가 허용 범위가 아닙니다.");
@@ -75,5 +75,11 @@ public class ChatRoomController {
                 .map(list -> modelMapper.map(list, ChatRoomResponseDto.class))
                 .collect(Collectors.toList());
         return new ChatRoomResponseDtoList(true,resultList);
+    }
+
+    @GetMapping("/room/{roomId}")
+    public ChatRoom roomInfo(@PathVariable String roomId, @RequestBody @Valid ChatRoomRequestDto chatRoomRequestDto) {
+
+        return chatService.findById(chatRoomRequestDto);
     }
 }
