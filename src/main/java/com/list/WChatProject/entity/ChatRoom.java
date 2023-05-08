@@ -1,4 +1,4 @@
-package com.list.WChatProject.chat;
+package com.list.WChatProject.entity;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "chatroom")
@@ -30,6 +30,8 @@ public class ChatRoom {
     private int maxPeople;
     @Column
     private boolean isSecret;
+    @Column
+    private LocalDateTime createAt;
 
 
 //    public static ChatRoom create(String name) {
