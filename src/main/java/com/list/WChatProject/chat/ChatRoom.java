@@ -23,7 +23,13 @@ public class ChatRoom {
     @Column
     private String roomName;
     @Column
+    private String password;
+    @Column
     private int countPeople;
+    @Column
+    private int maxPeople;
+    @Column
+    private boolean isSecret;
 
 
 //    public static ChatRoom create(String name) {
