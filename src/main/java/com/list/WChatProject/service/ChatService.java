@@ -40,7 +40,7 @@ public class ChatService {
         List<ChatRoom> result = chatRoomRepository.findAll();
 
         if (result.isEmpty()) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "채팅방이 없습니다.");
+            throw new CustomException(HttpStatus.NO_CONTENT, "채팅방이 없습니다.");
         }
 //        Collections.reverse(result);
 
@@ -71,7 +71,7 @@ public class ChatService {
 //        ChatRoom chatRoom = ChatRoom.create(name);
         if (!chatRoomCreateRequestDto.isSecret()) {
             ChatRoom chatRoom = ChatRoom.builder()
-                    .roomName(chatRoomCreateRequestDto.getName())
+                    .roomName(chatRoomCreateRequestDto.getRoomName())
                     .roomId(UUID.randomUUID().toString())
                     .maxPeople(chatRoomCreateRequestDto.getMaxPeople())
                     .isSecret(chatRoomCreateRequestDto.isSecret())
@@ -80,13 +80,13 @@ public class ChatService {
                     .build();
 
             return chatRoomRepository.save(chatRoom);
-        } else if (chatRoomCreateRequestDto.getPassword() != null) {
+        } else if (chatRoomCreateRequestDto.getRoomPassword() != null) {
             ChatRoom chatRoom = ChatRoom.builder()
-                    .roomName(chatRoomCreateRequestDto.getName())
+                    .roomName(chatRoomCreateRequestDto.getRoomName())
                     .roomId(UUID.randomUUID().toString())
                     .maxPeople(chatRoomCreateRequestDto.getMaxPeople())
                     .isSecret(chatRoomCreateRequestDto.isSecret())
-                    .password(passwordEncoder.encode(chatRoomCreateRequestDto.getPassword()))
+                    .password(passwordEncoder.encode(chatRoomCreateRequestDto.getRoomPassword()))
                     .countPeople(0)
                     .createAt(LocalDateTime.now())
                     .build();
