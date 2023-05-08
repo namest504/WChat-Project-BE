@@ -1,10 +1,13 @@
 package com.list.WChatProject.service;
 
-import com.list.WChatProject.chat.ChatRoom;
+import com.list.WChatProject.entity.ChatRoom;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,6 +40,18 @@ public class ChatService {
 //        Collections.reverse(result);
 
         return result;
+    }
+
+    public ChatRoomPageResponseDto pageChatRoom(int page) {
+        PageRequest pageRequest = PageRequest.of(page, 8, Sort.Direction.DESC, "createAt");
+        Page<ChatRoom> pageChatRoom = chatRoomRepository.findAllPage(pageRequest);
+        return getChatRoomPageResponseDto(pageChatRoom);
+    }
+
+    private ChatRoomPageResponseDto getChatRoomPageResponseDto(Page<ChatRoom> chatRooms) {
+        Page<ChatRoomResponseDto> toMap = chatRooms.map(
+                chatRoom -> new ChatRoomResponseDto(chatRoom.getRoomId(), chatRoom.getRoomName(), chatRoom.getCountPeople(), chatRoom.getMaxPeople(), chatRoom.isSecret()));
+        return new ChatRoomPageResponseDto(true, toMap.getContent(), toMap.getTotalPages(), toMap.getTotalElements());
     }
 
     //채팅방 하나 불러오기
