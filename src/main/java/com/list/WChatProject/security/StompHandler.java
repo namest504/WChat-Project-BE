@@ -38,7 +38,7 @@ public class StompHandler implements ChannelInterceptor {
             case SUBSCRIBE:
 //                String roomId = chatService.getRoomId(Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
                 String roomId = Optional.ofNullable((String) message.getHeaders().get("roomId"))
-                        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "헤더에 방 ID 정보가 없습니다."));
+                        .orElse("InvalidRoomId");
 //                Long uidFromToken = jwtService.getUidFromToken(accessor.getFirstNativeHeader("Authorization"));
                 String getSessionId = (String) message.getHeaders().get("SessionId");
                 log.info("getSessionId : {}", getSessionId);
