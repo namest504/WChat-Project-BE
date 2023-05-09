@@ -5,7 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "chatroom")
+@Table(name = "session")
 @Getter
 @Setter
 @NoArgsConstructor
