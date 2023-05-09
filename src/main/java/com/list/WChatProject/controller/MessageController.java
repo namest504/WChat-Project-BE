@@ -41,13 +41,15 @@ public class MessageController {
     @MessageMapping("/chat/message")
     public void enter(ChatMessage message) {
         if (bucket.tryConsume(1)) {
+            LOGGER.info("사용 가능한 토큰 수 {}", bucket.getAvailableTokens());
             if (MessageType.ENTER.equals(message.getType())) {
                 message.setMessage(message.getSender() + "님이 입장하였습니다.");
+                chatService.countPeopleChatRoom(message.getRoomId(), message.getType().getValue());
             }
             if (MessageType.EXIT.equals(message.getType())) {
                 message.setMessage(message.getSender() + "님이 퇴장하였습니다.");
+                chatService.countPeopleChatRoom(message.getRoomId(), message.getType().getValue());
             }
-            chatService.countPeopleChatRoom(message.getRoomId(), message.getType().getValue());
             sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
             LOGGER.info("[/topic/chat/room/{}]으로 ", message.getRoomId());
             LOGGER.info("[{}] 가 [{}]를 보냈습니다.", message.getSender(), message.getMessage());
