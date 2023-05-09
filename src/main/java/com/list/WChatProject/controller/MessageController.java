@@ -10,6 +10,7 @@ import io.github.bucket4j.Refill;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -22,21 +23,31 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class MessageController {
 
-    private final SimpMessageSendingOperations sendingOperations;
-    private final ChatService chatService;
+    private SimpMessageSendingOperations sendingOperations;
+    private ChatService chatService;
+    private final Bucket bucket;
     private final Logger LOGGER = LoggerFactory.getLogger(MessageController.class);
 
+    @Autowired
+    public MessageController(ChatService chatService, SimpMessageSendingOperations sendingOperations) {
+        //10분에 10개의 요청을 처리할 수 있는 Bucket 생성
+        Bandwidth limit = Bandwidth.classic(3, Refill.intervally(2, Duration.ofSeconds(1)));
+        this.bucket = Bucket.builder()
+                .addLimit(limit)
+                .build();
+        this.chatService = chatService;
+        this.sendingOperations = sendingOperations;
+    }
     //Refill.intervally toekn = 2, 1회충전시 2개의 토큰을 충전
     //Duration.ofSeconds = 1, 1초마다 토큰을 충전
-    Refill refill = Refill.intervally(2, Duration.ofSeconds(1));
+//    Refill refill = Refill.intervally(2, Duration.ofSeconds(1));
 
     //Bandwidth capacity = Bucket의 총 크기는 3
-    Bandwidth limit = Bandwidth.classic(3,refill);
+//    Bandwidth limit = Bandwidth.classic(3, refill);
 
     //총크기가 3이며 1초마다 2개의 Token을 충전하는 Bucket 생성
-    Bucket bucket = Bucket.builder()
-            .addLimit(limit)
-            .build();
+//    Bucket bucket = Bucket.builder().addLimit(limit).build();
+
     //bucket.tryConsume(1)
     @MessageMapping("/chat/message")
     public void enter(ChatMessage message) {
