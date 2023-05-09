@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Long> {
     Optional<Session> findSessionByMemberId(Long memberId);
+    Optional<Session> findSessionByNowSessionId(String nowSessionId);
 }

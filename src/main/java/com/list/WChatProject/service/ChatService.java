@@ -137,17 +137,6 @@ public class ChatService {
             default:
                 throw new CustomException(HttpStatus.BAD_REQUEST, "타입 지정이 되어야 합니다.");
         }
-//        if (messageType == "ENTER") {
-//            chatRoom.setCountPeople(chatRoom.getCountPeople() + 1);
-//            chatRoomRepository.save(chatRoom);
-//        } else if (messageType == "EXIT") {
-//            chatRoom.setCountPeople(chatRoom.getCountPeople() - 1);
-//            chatRoomRepository.save(chatRoom);
-//        } else if (messageType == "TALK") {
-//
-//        } else {
-//            throw new CustomException(HttpStatus.BAD_REQUEST, "메세지 타입 지정이 되어야 합니다.");
-//        }
         if (chatRoom.getCountPeople() == 0) {
             chatRoomRepository.deleteById(roomId);
         }

@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompConversionException;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
@@ -39,8 +40,8 @@ public class StompHandler implements ChannelInterceptor {
 //                String roomId = chatService.getRoomId(Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
                 String roomId = accessor.getFirstNativeHeader("roomId");
                 Long uidFromToken = jwtService.getUidFromToken(accessor.getFirstNativeHeader("Authorization"));
-                log.info("accessor.getSessionId() : {}", accessor.getSessionId());
-                log.info("setEnterInfo 동작 전 값 확인 : {} // {} // {}", accessor.getSessionId(), roomId, uidFromToken);
+//                log.info("accessor.getSessionId() : {}", accessor.getSessionId());
+//                log.info("setEnterInfo 동작 전 값 확인 : {} // {} // {}", accessor.getSessionId(), roomId, uidFromToken);
                 // SUBSCRIBE 동작시 session에 현재 유저 아이디 uid와, 메세지 헤더 정보의 roomId를 매핑해서 DB에 저장
                 Long sessionId = sessionService.setEnterInfo(accessor.getSessionId(), roomId, uidFromToken);
                 chatService.countPeopleChatRoom(roomId, "SUBSCRIBE");
@@ -49,6 +50,9 @@ public class StompHandler implements ChannelInterceptor {
 
             case DISCONNECT:
                 // TODO : DISCONNECT 가 발생시 어떻게 처리할지?
+                Session session = sessionRepository.findSessionByNowSessionId(accessor.getSessionId())
+                        .orElseThrow(() -> new StompConversionException("올바른 세션이 아닙니다."));
+                chatService.countPeopleChatRoom(session.getChatRoom().getRoomId(), "DISCONNECT");
 //                uidFromToken = jwtService.getUidFromToken(accessor.getFirstNativeHeader("Authorization"));
 //                Session session = sessionRepository.findSessionByMemberId(uidFromToken)
 //                        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "세션 정보가 없습니다."));
@@ -106,6 +110,7 @@ public class StompHandler implements ChannelInterceptor {
 
         return message;
     }
+
 }
 
 
