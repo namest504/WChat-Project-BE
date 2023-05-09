@@ -20,8 +20,8 @@ public class SessionService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
 
-    public Long setEnterInfo(String sessionId, String roomId) {
-        Member member = memberRepository.findById(SecurityUtil.getCurrentMemberId())
+    public Long setEnterInfo(String sessionId, String roomId, Long uid) {
+        Member member = memberRepository.findById(uid)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "유저가 없습니다."));
 
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
