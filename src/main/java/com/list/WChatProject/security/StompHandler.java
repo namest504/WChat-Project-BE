@@ -35,26 +35,25 @@ public class StompHandler implements ChannelInterceptor {
             case CONNECT:
                 jwtService.validateAccessToken(accessor.getFirstNativeHeader("Authorization"));
                 break;
-
-            case SUBSCRIBE:
-//                String roomId = chatService.getRoomId(Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
-                String roomId = Optional.ofNullable((String) message.getHeaders().get("roomId"))
-                        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "헤더에 방 ID 정보가 없습니다."));
-                Long uidFromToken = jwtService.getUidFromToken(accessor.getFirstNativeHeader("Authorization"));
-                // SUBSCRIBE 동작시 session에 현재 유저 아이디 uid와, 메세지 헤더 정보의 roomId를 매핑해서 DB에 저장
-                Long sessionId = sessionService.setEnterInfo(uidFromToken, roomId);
-                chatService.countPeopleChatRoom(roomId, "SUBSCRIBE");
-                log.info("SUBSCRIBE : [ {} ] [ {} ] [ {} ]", sessionId, uidFromToken, roomId);
-                break;
-
-            case DISCONNECT:
-                // TODO : DISCONNECT 가 발생시 어떻게 처리할지?
-                uidFromToken = jwtService.getUidFromToken(accessor.getFirstNativeHeader("Authorization"));
-                Session session = sessionRepository.findSessionByMemberId(uidFromToken)
-                        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "세션 정보가 없습니다."));
-                chatService.countPeopleChatRoom(session.getChatRoom().getRoomId(), "DISCONNECT");
-                log.info("DISCONNECT : [ {} ] [ {} ] [ {} ]",session.getId(), uidFromToken, session.getChatRoom().getRoomId());
-                break;
+//            case SUBSCRIBE:
+////                String roomId = chatService.getRoomId(Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
+//                String roomId = Optional.ofNullable((String) message.getHeaders().get("roomId"))
+//                        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "헤더에 방 ID 정보가 없습니다."));
+//                Long uidFromToken = jwtService.getUidFromToken(accessor.getFirstNativeHeader("Authorization"));
+//                // SUBSCRIBE 동작시 session에 현재 유저 아이디 uid와, 메세지 헤더 정보의 roomId를 매핑해서 DB에 저장
+//                Long sessionId = sessionService.setEnterInfo(uidFromToken, roomId);
+//                chatService.countPeopleChatRoom(roomId, "SUBSCRIBE");
+//                log.info("SUBSCRIBE : [ {} ] [ {} ] [ {} ]", sessionId, uidFromToken, roomId);
+//                break;
+//
+//            case DISCONNECT:
+//                // TODO : DISCONNECT 가 발생시 어떻게 처리할지?
+//                uidFromToken = jwtService.getUidFromToken(accessor.getFirstNativeHeader("Authorization"));
+//                Session session = sessionRepository.findSessionByMemberId(uidFromToken)
+//                        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "세션 정보가 없습니다."));
+//                chatService.countPeopleChatRoom(session.getChatRoom().getRoomId(), "DISCONNECT");
+//                log.info("DISCONNECT : [ {} ] [ {} ] [ {} ]",session.getId(), uidFromToken, session.getChatRoom().getRoomId());
+//                break;
             default:
                 break;
         }
