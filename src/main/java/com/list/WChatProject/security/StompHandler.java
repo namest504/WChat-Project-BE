@@ -72,14 +72,14 @@ public class StompHandler implements ChannelInterceptor {
 
                 Session session = sessionRepository.findSessionByNowSessionId(accessor.getSessionId())
                         .orElseThrow(() -> new StompConversionException("올바른 세션이 아닙니다."));
-//                sendingOperations.convertAndSend("/topic/chat/room/" + session.getChatRoom().getRoomId(),
-//                        ChatMessage.builder()
-//                                .type(MessageType.ENTER)
-//                                .roomId(session.getChatRoom().getRoomId())
-//                                .sender(session.getMember().getNickName())
-//                                .message(session.getMember().getNickName() + "님이 입장하였습니다.")
-//                                .sendAt(LocalDateTime.now().toString())
-//                                .build());
+                sendingOperations.convertAndSend("/topic/chat/room/" + session.getChatRoom().getRoomId(),
+                        ChatMessage.builder()
+                                .type(MessageType.ENTER)
+                                .roomId(session.getChatRoom().getRoomId())
+                                .sender(session.getMember().getNickName())
+                                .message(session.getMember().getNickName() + "님이 입장하였습니다.")
+                                .sendAt(LocalDateTime.now().toString())
+                                .build());
                 log.info("DISCONNECT {} 현재 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
                 boolean checkCountPeople = chatService.countPeopleChatRoom(session.getChatRoom().getRoomId(), "DISCONNECT");
                 log.info("DISCONNECT {} 결과 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
