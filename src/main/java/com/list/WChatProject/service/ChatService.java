@@ -120,7 +120,7 @@ public class ChatService {
     }
 
     @Transactional
-    public void countPeopleChatRoom(String roomId, String type) {
+    public boolean countPeopleChatRoom(String roomId, String type) {
 //        ChatRoom chatRoom = chatRooms.get(roomId);
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "방이 없습니다."));
@@ -138,7 +138,11 @@ public class ChatService {
                 throw new CustomException(HttpStatus.BAD_REQUEST, "타입 지정이 되어야 합니다.");
         }
         if (chatRoom.getCountPeople() == 0) {
-            chatRoomRepository.deleteById(roomId);
+            //채팅방 인원이 0 명이면 true 반환
+            return true;
+//            chatRoomRepository.deleteById(roomId);
         }
+        //채팅방에 인원이 남아있으면 false 반환
+        return false;
     }
 }
