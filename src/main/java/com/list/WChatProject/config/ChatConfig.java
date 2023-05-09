@@ -1,6 +1,9 @@
 package com.list.WChatProject.config;
 
+import com.list.WChatProject.security.StompHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -8,7 +11,10 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
+@RequiredArgsConstructor
 public class ChatConfig implements WebSocketMessageBrokerConfigurer {
+
+    private final StompHandler stompHandler;
 
     //Client에서 websocket연결할 때 사용할 API 경로를 설정해주는 메서드.
     //새로운 핸드쉐이크 커넥션을 생성할 때 사용됨.
@@ -28,5 +34,10 @@ public class ChatConfig implements WebSocketMessageBrokerConfigurer {
 
         //메시지 보낼 때 관련 경로 설정
         registry.setApplicationDestinationPrefixes("/app");
+    }
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(stompHandler);
     }
 }
