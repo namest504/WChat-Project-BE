@@ -55,34 +55,17 @@ public class StompHandler implements ChannelInterceptor {
 //                log.info("setEnterInfo 동작 전 값 확인 : {} // {} // {}", accessor.getSessionId(), roomId, uidFromToken);
                 // SUBSCRIBE 동작시 session에 현재 유저 아이디 uid와, 메세지 헤더 정보의 roomId를 매핑해서 DB에 저장
                 Long sessionId = sessionService.setEnterInfo(accessor.getSessionId(), roomId, uidFromToken);
-//                sendingOperations.convertAndSend("/topic/chat/room/" + roomId,
-//                        ChatMessage.builder()
-//                                .type(MessageType.ENTER)
-//                                .roomId(roomId)
-//                                .sender(member.getNickName())
-//                                .message(member.getNickName() + "님이 입장하였습니다.")
-//                                .sendAt(LocalDateTime.now().toString())
-//                                .build());
                 chatService.countPeopleChatRoom(roomId, "SUBSCRIBE");
                 log.info("SUBSCRIBE : [ {} ] [ {} ] [ {} ]", sessionId, accessor.getSessionId(), roomId);
                 break;
 
             case DISCONNECT:
-                // TODO : DISCONNECT 가 발생시 어떻게 처리할지?
-
+                log.info("DISCONNECT 시작");
                 Session session = sessionRepository.findSessionByNowSessionId(accessor.getSessionId())
                         .orElseThrow(() -> new StompConversionException("올바른 세션이 아닙니다."));
-                sendingOperations.convertAndSend("/topic/chat/room/" + session.getChatRoom().getRoomId(),
-                        ChatMessage.builder()
-                                .type(MessageType.EXIT)
-                                .roomId(session.getChatRoom().getRoomId())
-                                .sender(session.getMember().getNickName())
-                                .message(session.getMember().getNickName() + "님이 입장하였습니다.")
-                                .sendAt(LocalDateTime.now().toString())
-                                .build());
-                log.info("DISCONNECT {} 현재 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
+//                log.info("DISCONNECT {} 현재 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
                 boolean checkCountPeople = chatService.countPeopleChatRoom(session.getChatRoom().getRoomId(), "DISCONNECT");
-                log.info("DISCONNECT {} 결과 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
+//                log.info("DISCONNECT {} 결과 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
                 sessionRepository.delete(session);
                 if (checkCountPeople) {
                     chatRoomRepository.deleteById(session.getChatRoom().getRoomId());
@@ -92,6 +75,18 @@ public class StompHandler implements ChannelInterceptor {
 //                        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "세션 정보가 없습니다."));
 //                chatService.countPeopleChatRoom(session.getChatRoom().getRoomId(), "DISCONNECT");
 //                log.info("DISCONNECT : [ {} ] [ {} ] [ {} ]",session.getId(), uidFromToken, session.getChatRoom().getRoomId());
+                break;
+            case UNSUBSCRIBE:
+                log.info("UNSUBSCRIBE 시작");
+                session = sessionRepository.findSessionByNowSessionId(accessor.getSessionId())
+                        .orElseThrow(() -> new StompConversionException("올바른 세션이 아닙니다."));
+//                log.info("DISCONNECT {} 현재 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
+                checkCountPeople = chatService.countPeopleChatRoom(session.getChatRoom().getRoomId(), "DISCONNECT");
+//                log.info("DISCONNECT {} 결과 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
+                sessionRepository.delete(session);
+                if (checkCountPeople) {
+                    chatRoomRepository.deleteById(session.getChatRoom().getRoomId());
+                }
                 break;
             default:
                 break;
