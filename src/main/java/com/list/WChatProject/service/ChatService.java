@@ -40,9 +40,12 @@ public class ChatService {
 //    }
 
     //채팅방 하나 불러오기
-    public boolean checkPassword(ChatRoomRequestDto chatRoomRequestDto) {
+    public boolean checkRoomEnter(ChatRoomRequestDto chatRoomRequestDto) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomRequestDto.getRoomId())
                 .orElseThrow(() -> new CustomException(HttpStatus.NO_CONTENT, "채팅방이 존재하지 않습니다."));
+        if (chatRoom.getCountPeople() >= chatRoom.getMaxPeople()) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "방 인원이 가득 찼습니다.");
+        }
         if (chatRoom.isSecret() && !passwordEncoder.matches(chatRoomRequestDto.getRoomPassword(), chatRoom.getPassword())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "방 비밀번호가 일치하지 않습니다.");
         }
