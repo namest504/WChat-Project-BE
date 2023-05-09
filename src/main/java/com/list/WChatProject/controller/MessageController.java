@@ -50,24 +50,26 @@ public class MessageController {
     //bucket.tryConsume(1)
     @MessageMapping("/chat/message")
     public void enter(ChatMessage message) {
-//        if (message.getMessage() == null) {
-//            throw new CustomException(HttpStatus.BAD_REQUEST, "전송할 메세지가 없습니다.");
+
+//        if (MessageType.ENTER.equals(message.getType())) {
+//            message.setMessage(message.getSender() + "님이 입장하였습니다.");
+//            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
 //        }
-        if (bucket.tryConsume(1)) {
-            LOGGER.info("사용 가능한 토큰 수 {}", bucket.getAvailableTokens());
-            if (MessageType.ENTER.equals(message.getType())) {
-                message.setMessage(message.getSender() + "님이 입장하였습니다.");
+//        if (MessageType.EXIT.equals(message.getType())) {
+//            message.setMessage(message.getSender() + "님이 퇴장하였습니다.");
+//            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
+//        }
+        if (MessageType.TALK.equals(message.getType())) {
+            if (bucket.tryConsume(1)) {
+//                LOGGER.info("사용 가능한 토큰 수 {}", bucket.getAvailableTokens());
+                sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
+//                LOGGER.info("[/topic/chat/room/{}]으로 ", message.getRoomId());
+//                LOGGER.info("[{}] 가 [{}]를 보냈습니다.", message.getSender(), message.getMessage());
+            } else {
+                throw new StompConversionException("메세지 전송량이 너무 많습니다.");
             }
-            if (MessageType.EXIT.equals(message.getType())) {
-                message.setMessage(message.getSender() + "님이 퇴장하였습니다.");
-            }
-            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
-            LOGGER.info("[/topic/chat/room/{}]으로 ", message.getRoomId());
-            LOGGER.info("[{}] 가 [{}]를 보냈습니다.", message.getSender(), message.getMessage());
-        } else {
-            throw new StompConversionException("메세지 전송량이 너무 많습니다.");
-//            throw new CustomException(HttpStatus.TOO_MANY_REQUESTS, "메세지 전송량이 너무 많습니다.");
         }
+
 
     }
 }
