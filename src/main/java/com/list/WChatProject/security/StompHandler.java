@@ -46,6 +46,7 @@ public class StompHandler implements ChannelInterceptor {
                 jwtService.validateAccessToken(accessor.getFirstNativeHeader("Authorization"));
                 break;
             case SUBSCRIBE:
+                log.info("SUBSCRIBE 시작 {}", accessor.getSessionId());
 //                String roomId = chatService.getRoomId(Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
                 String roomId = accessor.getFirstNativeHeader("roomId");
                 Long uidFromToken = jwtService.getUidFromToken(accessor.getFirstNativeHeader("Authorization"));
@@ -60,7 +61,7 @@ public class StompHandler implements ChannelInterceptor {
                 break;
 
             case UNSUBSCRIBE:
-                log.info("UNSUBSCRIBE 시작");
+                log.info("UNSUBSCRIBE 시작 {}", accessor.getSessionId());
                 Session session = sessionRepository.findSessionByNowSessionId(accessor.getSessionId())
                         .orElseThrow(() -> new StompConversionException("올바른 세션이 아닙니다."));
 //                log.info("DISCONNECT {} 현재 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
@@ -70,15 +71,11 @@ public class StompHandler implements ChannelInterceptor {
                 if (checkCountPeople) {
                     chatRoomRepository.deleteById(session.getChatRoom().getRoomId());
                 }
-//                uidFromToken = jwtService.getUidFromToken(accessor.getFirstNativeHeader("Authorization"));
-//                Session session = sessionRepository.findSessionByMemberId(uidFromToken)
-//                        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "세션 정보가 없습니다."));
-//                chatService.countPeopleChatRoom(session.getChatRoom().getRoomId(), "DISCONNECT");
 //                log.info("DISCONNECT : [ {} ] [ {} ] [ {} ]",session.getId(), uidFromToken, session.getChatRoom().getRoomId());
                 break;
 
             case DISCONNECT:
-                log.info("DISCONNECT 시작");
+                log.info("DISCONNECT 시작 {}", accessor.getSessionId());
                 session = sessionRepository.findSessionByNowSessionId(accessor.getSessionId())
                         .orElseThrow(() -> new StompConversionException("올바른 세션이 아닙니다."));
 //                log.info("DISCONNECT {} 현재 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
@@ -88,10 +85,6 @@ public class StompHandler implements ChannelInterceptor {
                 if (checkCountPeople) {
                     chatRoomRepository.deleteById(session.getChatRoom().getRoomId());
                 }
-//                uidFromToken = jwtService.getUidFromToken(accessor.getFirstNativeHeader("Authorization"));
-//                Session session = sessionRepository.findSessionByMemberId(uidFromToken)
-//                        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "세션 정보가 없습니다."));
-//                chatService.countPeopleChatRoom(session.getChatRoom().getRoomId(), "DISCONNECT");
 //                log.info("DISCONNECT : [ {} ] [ {} ] [ {} ]",session.getId(), uidFromToken, session.getChatRoom().getRoomId());
                 break;
 
