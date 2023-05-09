@@ -74,7 +74,7 @@ public class StompHandler implements ChannelInterceptor {
                         .orElseThrow(() -> new StompConversionException("올바른 세션이 아닙니다."));
                 sendingOperations.convertAndSend("/topic/chat/room/" + session.getChatRoom().getRoomId(),
                         ChatMessage.builder()
-                                .type(MessageType.ENTER)
+                                .type(MessageType.EXIT)
                                 .roomId(session.getChatRoom().getRoomId())
                                 .sender(session.getMember().getNickName())
                                 .message(session.getMember().getNickName() + "님이 입장하였습니다.")
