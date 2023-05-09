@@ -55,6 +55,7 @@ public class StompHandler implements ChannelInterceptor {
                 log.info("DISCONNECT {} 현재 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
                 chatService.countPeopleChatRoom(session.getChatRoom().getRoomId(), "DISCONNECT");
                 log.info("DISCONNECT {} 결과 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
+                sessionRepository.delete(session);
 //                uidFromToken = jwtService.getUidFromToken(accessor.getFirstNativeHeader("Authorization"));
 //                Session session = sessionRepository.findSessionByMemberId(uidFromToken)
 //                        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "세션 정보가 없습니다."));
