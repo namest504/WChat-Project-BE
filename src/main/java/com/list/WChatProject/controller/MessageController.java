@@ -29,7 +29,7 @@ public class MessageController {
 
     public MessageController(ChatService chatService,SimpMessageSendingOperations sendingOperations) {
         //10분에 10개의 요청을 처리할 수 있는 Bucket 생성
-        Bandwidth limit = Bandwidth.classic(3, Refill.intervally(2, Duration.ofSeconds(1)));
+        Bandwidth limit = Bandwidth.classic(1, Refill.greedy(1, Duration.ofSeconds(1)));
         this.bucket = Bucket.builder()
                 .addLimit(limit)
                 .build();
