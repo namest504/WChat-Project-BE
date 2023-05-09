@@ -24,4 +24,7 @@ public class Session {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @Column
+    private String nowSessionId;
 }
