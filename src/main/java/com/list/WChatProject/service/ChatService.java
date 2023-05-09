@@ -120,18 +120,34 @@ public class ChatService {
     }
 
     @Transactional
-    public void countPeopleChatRoom(String roomId, String messageType) {
+    public void countPeopleChatRoom(String roomId, String type) {
 //        ChatRoom chatRoom = chatRooms.get(roomId);
-        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
-        if (messageType == "ENTER") {
-            chatRoom.setCountPeople(chatRoom.getCountPeople() + 1);
-            chatRoomRepository.save(chatRoom);
-        } else if (messageType == "EXIT") {
-            chatRoom.setCountPeople(chatRoom.getCountPeople() - 1);
-            chatRoomRepository.save(chatRoom);
-        } else {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "메세지 타입 지정이 되어야 합니다.");
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "방이 없습니다."));
+
+        switch (type) {
+            case "SUBSCRIBE":
+                chatRoom.setCountPeople(chatRoom.getCountPeople() + 1);
+                chatRoomRepository.save(chatRoom);
+                break;
+            case "DISCONNECT":
+                chatRoom.setCountPeople(chatRoom.getCountPeople() - 1);
+                chatRoomRepository.save(chatRoom);
+                break;
+            default:
+                throw new CustomException(HttpStatus.BAD_REQUEST, "타입 지정이 되어야 합니다.");
         }
+//        if (messageType == "ENTER") {
+//            chatRoom.setCountPeople(chatRoom.getCountPeople() + 1);
+//            chatRoomRepository.save(chatRoom);
+//        } else if (messageType == "EXIT") {
+//            chatRoom.setCountPeople(chatRoom.getCountPeople() - 1);
+//            chatRoomRepository.save(chatRoom);
+//        } else if (messageType == "TALK") {
+//
+//        } else {
+//            throw new CustomException(HttpStatus.BAD_REQUEST, "메세지 타입 지정이 되어야 합니다.");
+//        }
         if (chatRoom.getCountPeople() == 0) {
             chatRoomRepository.deleteById(roomId);
         }
