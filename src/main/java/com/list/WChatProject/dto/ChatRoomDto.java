@@ -59,7 +59,16 @@ public class ChatRoomDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ChatRoomRequestDto {
+        private String roomId;
         private String roomPassword;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class ChatRoomBooleanResponseDto {
+        private boolean success;
     }
 
 

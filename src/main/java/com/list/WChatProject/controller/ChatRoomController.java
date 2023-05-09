@@ -77,9 +77,8 @@ public class ChatRoomController {
         return new ChatRoomResponseDtoList(true,resultList);
     }
 
-    @GetMapping("/room/{roomId}")
-    public ChatRoom roomInfo(@PathVariable String roomId, @RequestBody ChatRoomRequestDto chatRoomRequestDto) {
-
-        return chatService.findById(roomId, chatRoomRequestDto);
+    @PostMapping("/check/roomPassword")
+    public ChatRoomBooleanResponseDto checkPassword(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
+        return new ChatRoomBooleanResponseDto(chatService.checkPassword(chatRoomRequestDto));
     }
 }

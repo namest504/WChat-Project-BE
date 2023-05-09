@@ -34,13 +34,13 @@ public class ChatService {
 //    }
 
     //채팅방 하나 불러오기
-    public ChatRoom findById(String roomId, ChatRoomRequestDto chatRoomRequestDto) {
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
+    public boolean checkPassword(ChatRoomRequestDto chatRoomRequestDto) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomRequestDto.getRoomId())
                 .orElseThrow(() -> new CustomException(HttpStatus.NO_CONTENT, "채팅방이 존재하지 않습니다."));
         if (chatRoom.isSecret() && !passwordEncoder.matches(chatRoomRequestDto.getRoomPassword(), chatRoom.getPassword())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "방 비밀번호가 일치하지 않습니다.");
         }
-        return chatRoom;
+        return true;
     }
 
     //채팅방 불러오기
