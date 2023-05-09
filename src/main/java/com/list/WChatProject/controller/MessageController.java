@@ -20,7 +20,6 @@ import java.time.Duration;
 
 
 @RestController
-@RequiredArgsConstructor
 public class MessageController {
 
     private SimpMessageSendingOperations sendingOperations;
@@ -28,8 +27,7 @@ public class MessageController {
     private final Bucket bucket;
     private final Logger LOGGER = LoggerFactory.getLogger(MessageController.class);
 
-    @Autowired
-    public MessageController(ChatService chatService, SimpMessageSendingOperations sendingOperations) {
+    public MessageController(ChatService chatService,SimpMessageSendingOperations sendingOperations) {
         //10분에 10개의 요청을 처리할 수 있는 Bucket 생성
         Bandwidth limit = Bandwidth.classic(3, Refill.intervally(2, Duration.ofSeconds(1)));
         this.bucket = Bucket.builder()
