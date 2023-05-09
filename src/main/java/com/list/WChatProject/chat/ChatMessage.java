@@ -21,5 +21,5 @@ public class ChatMessage {
     //내용
     private String message;
     //보낸 시간
-    private LocalDateTime sendAt;
+    private String sendAt;
 }
