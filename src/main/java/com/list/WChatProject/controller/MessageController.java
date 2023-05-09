@@ -49,9 +49,9 @@ public class MessageController {
     //bucket.tryConsume(1)
     @MessageMapping("/chat/message")
     public void enter(ChatMessage message) {
-        if (message.getMessage() == null) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "전송할 메세지가 없습니다.");
-        }
+//        if (message.getMessage() == null) {
+//            throw new CustomException(HttpStatus.BAD_REQUEST, "전송할 메세지가 없습니다.");
+//        }
         if (bucket.tryConsume(1)) {
             LOGGER.info("사용 가능한 토큰 수 {}", bucket.getAvailableTokens());
             if (MessageType.ENTER.equals(message.getType())) {
