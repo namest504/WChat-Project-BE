@@ -3,6 +3,7 @@ package com.list.WChatProject.security;
 import com.list.WChatProject.chat.ChatMessage;
 import com.list.WChatProject.entity.Session;
 import com.list.WChatProject.exception.CustomException;
+import com.list.WChatProject.repository.ChatRoomRepository;
 import com.list.WChatProject.repository.SessionRepository;
 import com.list.WChatProject.service.ChatService;
 import com.list.WChatProject.service.JwtService;
@@ -28,6 +29,7 @@ public class StompHandler implements ChannelInterceptor {
     private final ChatService chatService;
     private final SessionService sessionService;
     private final SessionRepository sessionRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -53,9 +55,12 @@ public class StompHandler implements ChannelInterceptor {
                 Session session = sessionRepository.findSessionByNowSessionId(accessor.getSessionId())
                         .orElseThrow(() -> new StompConversionException("올바른 세션이 아닙니다."));
                 log.info("DISCONNECT {} 현재 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
-                chatService.countPeopleChatRoom(session.getChatRoom().getRoomId(), "DISCONNECT");
+                boolean checkCountPeople = chatService.countPeopleChatRoom(session.getChatRoom().getRoomId(), "DISCONNECT");
                 log.info("DISCONNECT {} 결과 인원수 {}", accessor.getSessionId(), session.getChatRoom().getCountPeople());
                 sessionRepository.delete(session);
+                if (checkCountPeople) {
+                    chatRoomRepository.deleteById(session.getChatRoom().getRoomId());
+                }
 //                uidFromToken = jwtService.getUidFromToken(accessor.getFirstNativeHeader("Authorization"));
 //                Session session = sessionRepository.findSessionByMemberId(uidFromToken)
 //                        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "세션 정보가 없습니다."));
