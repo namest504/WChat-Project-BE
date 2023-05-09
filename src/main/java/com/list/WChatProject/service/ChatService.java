@@ -42,7 +42,7 @@ public class ChatService {
     //채팅방 하나 불러오기
     public boolean checkRoomEnter(ChatRoomRequestDto chatRoomRequestDto) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomRequestDto.getRoomId())
-                .orElseThrow(() -> new CustomException(HttpStatus.NO_CONTENT, "채팅방이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "채팅방이 존재하지 않습니다."));
         if (chatRoom.getCountPeople() >= chatRoom.getMaxPeople()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "방 인원이 가득 찼습니다.");
         }
