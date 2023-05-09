@@ -1,10 +1,13 @@
 package com.list.WChatProject.service;
 
+import com.list.WChatProject.controller.ChatRoomController;
 import com.list.WChatProject.entity.ChatRoom;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,6 +28,9 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final Logger LOGGER = LoggerFactory.getLogger(ChatService.class);
+
 //    private Map<String, ChatRoom> chatRooms;
 
 //    @PostConstruct
@@ -117,14 +123,17 @@ public class ChatService {
         if (messageType == "ENTER") {
             chatRoom.setCountPeople(chatRoom.getCountPeople() + 1);
             chatRoomRepository.save(chatRoom);
+            LOGGER.info("ENTER 후 : 현재 인원수 / 최대 인원수 [ {} / {} ]", chatRoom.getCountPeople(), chatRoom.getMaxPeople());
         } else if (messageType == "EXIT") {
             chatRoom.setCountPeople(chatRoom.getCountPeople() - 1);
-            if (chatRoom.getCountPeople() == 0) {
-                chatRoomRepository.deleteById(roomId);
-            }
             chatRoomRepository.save(chatRoom);
+            LOGGER.info("EXIT 후 : 현재 인원수 / 최대 인원수 [ {} / {} ]", chatRoom.getCountPeople(), chatRoom.getMaxPeople());
         } else {
             throw new CustomException(HttpStatus.BAD_REQUEST, "메세지 타입 지정이 되어야 합니다.");
+        }
+        LOGGER.info("처리 후 : 현재 인원수 / 최대 인원수 [ {} / {} ]", chatRoom.getCountPeople(), chatRoom.getMaxPeople());
+        if (chatRoom.getCountPeople() == 0) {
+            chatRoomRepository.deleteById(roomId);
         }
     }
 }
