@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .addFilterBefore(authenticationFilter, JwtAuthenticationFilter.class)
 
                 .authorizeRequests()
-                .antMatchers("/", "/**").permitAll()
+                .antMatchers("/auth/kakao/callback").permitAll()
                 .antMatchers("**exception**").permitAll()
                 .anyRequest().authenticated()
                 .and()
