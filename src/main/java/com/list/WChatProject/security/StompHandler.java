@@ -43,6 +43,7 @@ public class StompHandler implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         switch (accessor.getCommand()) {
             case CONNECT:
+                log.info("토큰 검증 직전 = [ {} ]", accessor.getFirstNativeHeader("Authorization"));
                 jwtService.validateAccessToken(accessor.getFirstNativeHeader("Authorization"));
                 break;
             case SUBSCRIBE:
