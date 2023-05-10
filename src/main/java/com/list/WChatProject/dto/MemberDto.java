@@ -55,6 +55,6 @@ public class MemberDto {
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class DeleteMemberResponseDto {
-        private Boolean success;
+        private boolean success;
     }
 }
