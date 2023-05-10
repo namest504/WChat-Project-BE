@@ -70,6 +70,10 @@ public class ChatRoomController {
     @GetMapping("/room")
     public ChatRoomResponseDtoList findRoomName(@RequestParam @Valid String roomName) {
         List<ChatRoom> chatRooms = chatService.findRoomByRoomName(roomName);
+
+        if (chatRooms.isEmpty()) {
+            return new ChatRoomResponseDtoList(false,null);
+        }
         List<ChatRoomResponseDto> resultList = chatRooms
                 .stream()
                 .map(list -> modelMapper.map(list, ChatRoomResponseDto.class))

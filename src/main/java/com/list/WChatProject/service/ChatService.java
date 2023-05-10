@@ -80,8 +80,7 @@ public class ChatService {
 
     //채팅방 하나 불러오기
     public List<ChatRoom> findRoomByRoomName(String roomName) {
-        List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByRoomNameContaining(roomName)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "방이 없습니다."));
+        List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByRoomNameContaining(roomName);
         return chatRooms;
     }
 
