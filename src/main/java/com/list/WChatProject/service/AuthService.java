@@ -112,32 +112,7 @@ public class AuthService {
 
     @Transactional
     public boolean withdrawal(Long uid) {
-        QMember qMember = new QMember("member");
         memberRepository.deleteById(uid);
         return logout(uid);
     }
 }
-
-//    public Member inquire(Long memberId) {
-//        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(
-//                        () -> new CustomException(HttpStatus.UNAUTHORIZED, "일치하는 유저가 없습니다."));
-//        return member;
-//    }
-//
-//    public Member updatePassword(Long uid, UpdatePasswordRequestDto updatePasswordRequestDto) {
-//        Member member = memberRepository.findById(uid)
-//                .orElseThrow(
-//                        () -> new CustomException(HttpStatus.UNAUTHORIZED, "일치하는 유저가 없습니다."));
-//        if (!passwordEncoder.matches(updatePasswordRequestDto.getRawPassword(), member.getPassword())) {
-//            throw new CustomException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
-//        }
-//
-//        String encodePassword = passwordEncoder.encode(updatePasswordRequestDto.getNewPassword());
-//        member.setPassword(encodePassword);
-//
-//        Member result = memberRepository.save(member);
-//
-//        return result;
-//    }
-//}
