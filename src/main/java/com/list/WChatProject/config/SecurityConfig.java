@@ -72,7 +72,7 @@ public class SecurityConfig {
 
                 .authorizeRequests()
                 .antMatchers("/auth/kakao/callback").permitAll()
-                .antMatchers("/ws/chat/info").permitAll()
+                .antMatchers("/ws/chat").permitAll()
                 .antMatchers("**exception**").permitAll()
                 .anyRequest().authenticated()
                 .and()
