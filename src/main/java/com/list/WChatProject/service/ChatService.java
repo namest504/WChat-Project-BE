@@ -85,15 +85,15 @@ public class ChatService {
     public List<ChatRoom> findRoomByRoomName(String roomName) {
 //        List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByRoomNameContaining(roomName);
 
-        for (int i = 0; i < 3; i++) {
-            chatRoomRepository.save(ChatRoom.builder()
-                    .roomId("roomId" + i)
-                    .roomName("roomName" + i)
-                    .countPeople(i + 2)
-                    .maxPeople(i + 3)
-                    .isSecret(false)
-                    .build());
-        }
+//        for (int i = 0; i < 3; i++) {
+//            chatRoomRepository.save(ChatRoom.builder()
+//                    .roomId("roomId" + i)
+//                    .roomName("roomName" + i)
+//                    .countPeople(i + 2)
+//                    .maxPeople(i + 3)
+//                    .isSecret(false)
+//                    .build());
+//        }
         QChatRoom qChatRoom = new QChatRoom("chatroom");
 
         List<ChatRoom> chatRoomList = jpaQueryFactory

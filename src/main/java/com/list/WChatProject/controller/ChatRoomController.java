@@ -74,10 +74,10 @@ public class ChatRoomController {
 //        if (chatRooms.isEmpty()) {
 //            return new ChatRoomResponseDtoList(false,null);
 //        }
-        List<ChatRoomResponseDto> resultList = chatRooms
-                .stream()
-                .map(list -> modelMapper.map(list, ChatRoomResponseDto.class))
-                .collect(Collectors.toList());
+//        List<ChatRoomResponseDto> resultList = chatRooms
+//                .stream()
+//                .map(list -> modelMapper.map(list, ChatRoomResponseDto.class))
+//                .collect(Collectors.toList());
 //        return new ChatRoomResponseDtoList(true,resultList);
         return chatRooms;
     }
