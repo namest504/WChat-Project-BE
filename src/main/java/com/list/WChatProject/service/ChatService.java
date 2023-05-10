@@ -5,6 +5,8 @@ import com.list.WChatProject.entity.ChatRoom;
 import com.list.WChatProject.entity.QChatRoom;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.repository.ChatRoomRepository;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,29 +84,19 @@ public class ChatService {
     }
 
     //채팅방 이름 검색
-    public List<ChatRoom> findRoomByRoomName(String roomName) {
-//        List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByRoomNameContaining(roomName);
+    public List<ChatRoomResponseDto> findRoomByRoomName(String roomName) {
 
-//        for (int i = 0; i < 3; i++) {
-//            chatRoomRepository.save(ChatRoom.builder()
-//                    .roomId("roomId" + i)
-//                    .roomName("roomName" + i)
-//                    .countPeople(i + 2)
-//                    .maxPeople(i + 3)
-//                    .isSecret(false)
-//                    .build());
-//        }
         QChatRoom qChatRoom = new QChatRoom("chatroom");
 
-        List<ChatRoom> chatRoomList = jpaQueryFactory
-                .selectFrom(qChatRoom)
+        List<ChatRoomResponseDto> chatRoomList = jpaQueryFactory
+                .select(Projections.constructor(
+                                ChatRoomResponseDto.class,
+                        qChatRoom.roomId, qChatRoom.roomName, qChatRoom.countPeople,
+                                qChatRoom.maxPeople, qChatRoom.isSecret
+                                ))
+                .from(qChatRoom)
                 .where(qChatRoom.roomName.contains(roomName))
                 .fetch();
-
-        log.info("출력 시작");
-        for (ChatRoom chatRoom : chatRoomList) {
-            log.info("{}",chatRoom.getRoomName());
-        }
         return chatRoomList;
     }
 
