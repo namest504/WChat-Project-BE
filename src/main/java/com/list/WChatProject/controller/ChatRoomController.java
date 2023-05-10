@@ -68,18 +68,12 @@ public class ChatRoomController {
 
     //특정 채팅방 조회
     @GetMapping("/room")
-    public List<ChatRoom> findRoomName(@RequestParam @Valid String roomName) {
-        List<ChatRoom> chatRooms = chatService.findRoomByRoomName(roomName);
-
-//        if (chatRooms.isEmpty()) {
-//            return new ChatRoomResponseDtoList(false,null);
-//        }
-//        List<ChatRoomResponseDto> resultList = chatRooms
-//                .stream()
-//                .map(list -> modelMapper.map(list, ChatRoomResponseDto.class))
-//                .collect(Collectors.toList());
-//        return new ChatRoomResponseDtoList(true,resultList);
-        return chatRooms;
+    public ChatRoomResponseDtoList findRoomName(@RequestParam @Valid String roomName) {
+        List<ChatRoomResponseDto> chatRoomResponseDtoList = chatService.findRoomByRoomName(roomName);
+        if (chatRoomResponseDtoList.isEmpty() || chatRoomResponseDtoList == null) {
+            return new ChatRoomResponseDtoList(false, chatRoomResponseDtoList);
+        }
+        return new ChatRoomResponseDtoList(true, chatRoomResponseDtoList);
     }
 
     @PostMapping("/room/enter")
