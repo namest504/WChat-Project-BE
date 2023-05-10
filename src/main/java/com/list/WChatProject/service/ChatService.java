@@ -92,6 +92,7 @@ public class ChatService {
         return chatRoomList;
     }
 
+    @Transactional
     //채팅방 생성
     public ChatRoom createRoom(ChatRoomCreateRequestDto chatRoomCreateRequestDto) {
         if (!chatRoomCreateRequestDto.isSecret()) {

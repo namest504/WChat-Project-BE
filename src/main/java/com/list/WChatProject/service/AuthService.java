@@ -39,6 +39,7 @@ public class AuthService {
                 .getId();
     }
 
+    @Transactional
     public Member register(RegisterRequestDto registerRequestDto) {
         if (memberRepository.existsByUserId(registerRequestDto.getUserId())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 가입되어있는 아이디 입니다.");
@@ -98,6 +99,7 @@ public class AuthService {
         return refreshToken.toString();
     }
 
+    @Transactional
     public Boolean saveRefreshToken(Long loginId, String refreshToken) {
         RefreshToken rt = RefreshToken.builder()
                 .key(loginId.toString())
@@ -108,11 +110,10 @@ public class AuthService {
         return true;
     }
 
+    @Transactional
     public boolean withdrawal(Long uid) {
         QMember qMember = new QMember("member");
-        jpaQueryFactory.delete(qMember)
-                .where(qMember.id.eq(uid))
-                .execute();
+        memberRepository.deleteById(uid);
         return logout(uid);
     }
 }
