@@ -52,11 +52,11 @@ public class MessageController {
     public void enter(ChatMessage message) {
 
         if (MessageType.ENTER.equals(message.getType())) {
-            message.setMessage(message.getSender() + "님이 입장하였습니다.");
+            message.setMessage(message.getSender() + " ㅎㅇㅎㅇ");
             sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
         }
         if (MessageType.EXIT.equals(message.getType())) {
-            message.setMessage(message.getSender() + "님이 퇴장하였습니다.");
+            message.setMessage(message.getSender() + " ㅂ2ㅂ2");
             sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
         }
         if (MessageType.TALK.equals(message.getType())) {
