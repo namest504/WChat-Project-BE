@@ -53,7 +53,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // CSRF 설정 Disable
         http.httpBasic().disable()
-
+                .cors()
+                .and()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(
