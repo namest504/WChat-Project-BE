@@ -26,7 +26,7 @@ public class JwtService {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(JwtService.class);
 
-	private static final Long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60L * 30L;           // n(30)분
+	private static final Long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60L * 5L;           // n(5)분
 	private static final Long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60L * 60L * 24L;	 // n(1)일
 
 	public static final String BEARER_PREFIX = "Bearer ";
