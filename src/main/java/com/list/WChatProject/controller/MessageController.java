@@ -51,14 +51,14 @@ public class MessageController {
     @MessageMapping("/chat/message")
     public void enter(ChatMessage message) {
 
-//        if (MessageType.ENTER.equals(message.getType())) {
-//            message.setMessage(message.getSender() + "님이 입장하였습니다.");
-//            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
-//        }
-//        if (MessageType.EXIT.equals(message.getType())) {
-//            message.setMessage(message.getSender() + "님이 퇴장하였습니다.");
-//            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
-//        }
+        if (MessageType.ENTER.equals(message.getType())) {
+            message.setMessage(message.getSender() + "님이 입장하였습니다.");
+            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
+        }
+        if (MessageType.EXIT.equals(message.getType())) {
+            message.setMessage(message.getSender() + "님이 퇴장하였습니다.");
+            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
+        }
         if (MessageType.TALK.equals(message.getType())) {
             if (bucket.tryConsume(1)) {
 //                LOGGER.info("사용 가능한 토큰 수 {}", bucket.getAvailableTokens());
