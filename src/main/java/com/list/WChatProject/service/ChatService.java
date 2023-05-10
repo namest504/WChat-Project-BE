@@ -2,8 +2,10 @@ package com.list.WChatProject.service;
 
 import com.list.WChatProject.controller.ChatRoomController;
 import com.list.WChatProject.entity.ChatRoom;
+import com.list.WChatProject.entity.QChatRoom;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.repository.ChatRoomRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -28,6 +30,7 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JPAQueryFactory jpaQueryFactory;
 
     private final Logger LOGGER = LoggerFactory.getLogger(ChatService.class);
 
@@ -78,10 +81,31 @@ public class ChatService {
         return new ChatRoomPageResponseDto(true, toMap.getContent(), toMap.getTotalPages(), toMap.getTotalElements());
     }
 
-    //채팅방 하나 불러오기
+    //채팅방 이름 검색
     public List<ChatRoom> findRoomByRoomName(String roomName) {
-        List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByRoomNameContaining(roomName);
-        return chatRooms;
+//        List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByRoomNameContaining(roomName);
+
+        for (int i = 0; i < 3; i++) {
+            chatRoomRepository.save(ChatRoom.builder()
+                    .roomId("roomId" + i)
+                    .roomName("roomName" + i)
+                    .countPeople(i + 2)
+                    .maxPeople(i + 3)
+                    .isSecret(false)
+                    .build());
+        }
+        QChatRoom qChatRoom = new QChatRoom("chatroom");
+
+        List<ChatRoom> chatRoomList = jpaQueryFactory
+                .selectFrom(qChatRoom)
+                .where(qChatRoom.roomName.contains(roomName))
+                .fetch();
+
+        log.info("출력 시작");
+        for (ChatRoom chatRoom : chatRoomList) {
+            log.info("{}",chatRoom.getRoomName());
+        }
+        return chatRoomList;
     }
 
     //채팅방 생성
