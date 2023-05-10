@@ -62,9 +62,9 @@ public class AuthController {
     }
 
     @PutMapping("/change")
-    public ChangeNickNameResponseDto changeMyNickName(@AuthenticationPrincipal MemberPrincipal memberPrincipal, @RequestBody @Valid String nickName) {
-        LOGGER.info("[{}] 님이 [{}] 으로 닉네임 변경을 시도했습니다.", memberPrincipal.getMember().getName(), nickName);
-        return authService.changeNickName(memberPrincipal.getMember().getId(), nickName);
+    public ChangeNickNameResponseDto changeMyNickName(@AuthenticationPrincipal MemberPrincipal memberPrincipal, @RequestBody @Valid ChangeNickNameRequestDto changeNickNameRequestDto) {
+        LOGGER.info("[{}] 님이 [{}] 으로 닉네임 변경을 시도했습니다.", memberPrincipal.getMember().getName(), changeNickNameRequestDto.getNickName());
+        return authService.changeNickName(memberPrincipal.getMember().getId(), changeNickNameRequestDto.getNickName());
     }
 
     @PostMapping("/logout")

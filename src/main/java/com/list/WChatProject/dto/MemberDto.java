@@ -35,6 +35,14 @@ public class MemberDto {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ChangeNickNameRequestDto {
+        private String nickName;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class ChangeNickNameResponseDto {
         private boolean success;
