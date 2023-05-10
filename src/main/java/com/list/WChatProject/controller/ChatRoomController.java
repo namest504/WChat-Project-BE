@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.list.WChatProject.dto.ChatRoomDto.*;
+import static com.list.WChatProject.dto.MemberDto.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -80,5 +81,12 @@ public class ChatRoomController {
     public ChatRoomBooleanResponseDto roomEnter(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
         boolean checkRoomEnter = chatService.checkRoomEnter(chatRoomRequestDto);
         return new ChatRoomBooleanResponseDto(checkRoomEnter);
+    }
+
+    // 방안엔 멤버 닉네임 불러오는 API
+    @GetMapping("/room/users/{roomId}")
+    public NickNameResponseDtos findMembersInRoom(@PathVariable String roomId) {
+        List<NickNameResponseDto> membersInRoom = chatService.findMembersInRoom(roomId);
+        return new NickNameResponseDtos(true, membersInRoom);
     }
 }

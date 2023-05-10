@@ -1,8 +1,9 @@
 package com.list.WChatProject.service;
 
-import com.list.WChatProject.controller.ChatRoomController;
 import com.list.WChatProject.entity.ChatRoom;
 import com.list.WChatProject.entity.QChatRoom;
+import com.list.WChatProject.entity.QMember;
+import com.list.WChatProject.entity.QSession;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.repository.ChatRoomRepository;
 import com.querydsl.core.types.Projections;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.list.WChatProject.dto.ChatRoomDto.*;
+import static com.list.WChatProject.dto.MemberDto.*;
 
 @Service
 @Slf4j
@@ -35,14 +37,6 @@ public class ChatService {
     private final JPAQueryFactory jpaQueryFactory;
 
     private final Logger LOGGER = LoggerFactory.getLogger(ChatService.class);
-
-//    private Map<String, ChatRoom> chatRooms;
-
-//    @PostConstruct
-//    //의존관게 주입완료되면 실행되는 코드
-//    private void init() {
-//        chatRooms = new LinkedHashMap<>();
-//    }
 
     //채팅방 하나 불러오기
     public boolean checkRoomEnter(ChatRoomRequestDto chatRoomRequestDto) {
@@ -60,13 +54,11 @@ public class ChatService {
     //채팅방 불러오기
     public List<ChatRoom> findAllRoom() {
         //채팅방 최근 생성 순으로 반환
-//        List<ChatRoom> result = new ArrayList<>(chatRooms.values());
         List<ChatRoom> result = chatRoomRepository.findAll();
 
         if (result.isEmpty()) {
             throw new CustomException(HttpStatus.NO_CONTENT, "채팅방이 없습니다.");
         }
-//        Collections.reverse(result);
 
         return result;
     }
@@ -102,7 +94,6 @@ public class ChatService {
 
     //채팅방 생성
     public ChatRoom createRoom(ChatRoomCreateRequestDto chatRoomCreateRequestDto) {
-//        ChatRoom chatRoom = ChatRoom.create(name);
         if (!chatRoomCreateRequestDto.isSecret()) {
             ChatRoom chatRoom = ChatRoom.builder()
                     .roomName(chatRoomCreateRequestDto.getRoomName())
@@ -129,14 +120,10 @@ public class ChatService {
         } else {
             throw new CustomException(HttpStatus.BAD_REQUEST, "방 생성에 실패하였습니다.");
         }
-
-//        chatRooms.put(chatRoom.getRoomId(), chatRoom);
-
     }
 
     @Transactional
     public boolean countPeopleChatRoom(String roomId, String type) {
-//        ChatRoom chatRoom = chatRooms.get(roomId);
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "방이 없습니다."));
 
@@ -155,9 +142,26 @@ public class ChatService {
         if (chatRoom.getCountPeople() == 0) {
             //채팅방 인원이 0 명이면 true 반환
             return true;
-//            chatRoomRepository.deleteById(roomId);
         }
         //채팅방에 인원이 남아있으면 false 반환
         return false;
+    }
+
+    public List<NickNameResponseDto> findMembersInRoom(String roomId) {
+        QSession qSession = new QSession("session");
+        QMember qMember = new QMember("member");
+
+        List<NickNameResponseDto> chatRoomList = jpaQueryFactory
+                .select(Projections.constructor(
+                        NickNameResponseDto.class,
+                        qMember.nickName))
+                .from(qMember)
+                .where(qMember.id.in(JPAExpressions
+                        .select(qSession.member.id)
+                        .from(qSession)
+                        .where(qSession.chatRoom.roomId.eq(roomId))
+                ))
+                .fetch();
+        return chatRoomList;
     }
 }
