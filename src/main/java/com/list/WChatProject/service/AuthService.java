@@ -2,10 +2,12 @@ package com.list.WChatProject.service;
 
 import com.list.WChatProject.entity.AccountType;
 import com.list.WChatProject.entity.Member;
+import com.list.WChatProject.entity.QMember;
 import com.list.WChatProject.entity.RefreshToken;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.repository.MemberRepository;
 import com.list.WChatProject.repository.RefreshTokenRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JPAQueryFactory jpaQueryFactory;
 
     public boolean isRegisterdKakao(String userId) {
         return memberRepository.existsByUserIdAndAccountType(userId, AccountType.KAKAO);
@@ -84,22 +87,10 @@ public class AuthService {
     }
 
     @Transactional
-    public Boolean logout(Long uid) {
+    public boolean logout(Long uid) {
         refreshTokenRepository.deleteByKey(uid.toString());
         return true;
     }
-
-//    public Long login(LoginDto login) {
-//        Member member = memberRepository.findByUserId(login.getUserId())
-//                .orElseThrow(
-//                        () -> new CustomException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다."));
-//
-//        if (!passwordEncoder.matches(login.getPassword(), member.getPassword())) {
-//            throw new CustomException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다.");
-//        }
-//
-//        return member.getId();
-//    }
 
     public String getRefreshToken(Long uid) {
         RefreshToken refreshToken = refreshTokenRepository.findByKey(uid.toString())
@@ -116,6 +107,15 @@ public class AuthService {
 
         return true;
     }
+
+    public boolean withdrawal(Long uid) {
+        QMember qMember = new QMember("member");
+        jpaQueryFactory.delete(qMember)
+                .where(qMember.id.eq(uid))
+                .execute();
+        return logout(uid);
+    }
+}
 
 //    public Member inquire(Long memberId) {
 //        Member member = memberRepository.findById(memberId)
@@ -139,4 +139,4 @@ public class AuthService {
 //
 //        return result;
 //    }
-}
+//}

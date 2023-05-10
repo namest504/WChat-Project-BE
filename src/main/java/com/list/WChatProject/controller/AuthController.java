@@ -93,57 +93,13 @@ public class AuthController {
         return new UseRefreshTokenResponseDto(true, accessToken);
     }
 
-//    @PostMapping("/register")
-//    public RegisterResponseDto register(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
-//        Member member = authService.register(registerRequestDto);
-//        return new RegisterResponseDto(true, member.getUserId());
-//    }
-//
-//    @PostMapping("/login")
-//    public LoginResponseDto login(@RequestBody @Valid LoginDto loginDto) {
-//        Long loginId = authService.login(loginDto);
-//        String accessToken = jwtService.createAccessToken(loginId);
-//        String refreshToken = jwtService.createRefreshToken(loginId);
-//        authService.saveRefreshToken(loginId, refreshToken);
-//        return new LoginResponseDto(true, loginId,accessToken, refreshToken);
-//    }
-//
-//    @GetMapping("/inquire/{memberId}")
-//    public MemberResponseDto inquire(@PathVariable @Valid Long memberId) {
-//        System.out.println("memberId = " + memberId);
-//        System.out.println("inquire [memberId] 대상으로 실행");
-//        return new MemberResponseDto(true, authService.inquire(memberId).getUserId());
-//    }
-//
-//
-//    @GetMapping("/inquire/me")
-//    public MemberResponseDto inquireMe(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-//        LOGGER.info("[AuthController] inquireMe 시작");
-//        LOGGER.info("[AuthController] userInfoPrincipal.getUsername() = {}", memberPrincipal.getUsername());
-//        LOGGER.info("[AuthController] userInfoPrincipal.getMember() = {}", memberPrincipal.getMember());
-//        LOGGER.info("[AuthController] userInfoPrincipal.getMember().getId() = {}", memberPrincipal.getMember().getId());
-//
-//        System.out.println("inquire [본인] 대상으로 실행");
-//        Member authMember = authService.inquire(memberPrincipal.getMember().getId());
-//        UserDetails userDetails = userDetailsService.loadUserByUsername(memberPrincipal.getMember().getUsername());
-//        return new MemberResponseDto(true, userDetails.getUsername());
-//    }
-//
-//    @GetMapping("/test/non")
-//    public TestResponseDto testAuthNon(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-//        return new TestResponseDto(true, memberPrincipal.getMember().getUserId());
-//    }
-//
-//    @GetMapping("/test/user")
-//    @Secured("ROLE_USER")
-//    public TestResponseDto testAuthUser(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-//        return new TestResponseDto(true, memberPrincipal.getMember().getUserId());
-//    }
-//
-//    @PutMapping("/password")
-//    public MemberResponseDto updatePassword(@AuthenticationPrincipal MemberPrincipal memberPrincipal,@RequestBody UpdatePasswordRequestDto updatePasswordRequestDto) {
-//        LOGGER.info("[AuthController] userInfoPrincipal.getMember().getId() = {}", memberPrincipal.getMember().getId());
-//        Member member = authService.updatePassword(memberPrincipal.getMember().getId(), updatePasswordRequestDto);
-//        return new MemberResponseDto(true, member.getUserId());
-//    }
+    @DeleteMapping("/withdrawal")
+    public DeleteMemberResponseDto withdrawal(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        if (memberPrincipal.getMember().getId() == null) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "인증되지 않은 유저입니다.");
+        }
+        Boolean result = authService.withdrawal(memberPrincipal.getMember().getId());
+
+        return new DeleteMemberResponseDto(result);
+    }
 }

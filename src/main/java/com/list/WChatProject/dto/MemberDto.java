@@ -49,4 +49,12 @@ public class MemberDto {
         private boolean success;
         private List<NickNameResponseDto> nickNameResponseDtoList;
     }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class DeleteMemberResponseDto {
+        private Boolean success;
+    }
 }
