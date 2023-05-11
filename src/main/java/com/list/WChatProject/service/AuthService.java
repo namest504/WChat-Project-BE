@@ -2,15 +2,12 @@ package com.list.WChatProject.service;
 
 import com.list.WChatProject.entity.AccountType;
 import com.list.WChatProject.entity.Member;
-import com.list.WChatProject.entity.QMember;
 import com.list.WChatProject.entity.RefreshToken;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.repository.MemberRepository;
 import com.list.WChatProject.repository.RefreshTokenRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

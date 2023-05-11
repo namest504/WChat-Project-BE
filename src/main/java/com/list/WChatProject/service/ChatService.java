@@ -151,53 +151,6 @@ public class ChatService {
     }
 
     public List<Member> findMembersInRoom(String roomId) {
-//        QSession qSession = new QSession("session");
-//        QMember qMember = new QMember("member");
-//        List<NickNameResponseDto> chatRoomList = jpaQueryFactory
-//                .select(Projections.constructor(
-//                        NickNameResponseDto.class,
-//                        qMember.nickName))
-//                .from(qMember)
-//                .leftJoin(qSession.member)
-//                .on(qSession.member.id.eq(qMember.id))
-//                .where(qSession.chatRoom.roomId.eq(roomId))
-//                .fetch();
-//        List<NickNameResponseDto> chatRoomList = jpaQueryFactory
-//                .select(Projections.constructor(
-//                        NickNameResponseDto.class,
-//                        qMember.nickName))
-//                .from(qMember)
-//                .where(qMember.id.in(JPAExpressions
-//                        .select(qSession.member.id)
-//                        .from(qSession)
-//                        .where(qSession.chatRoom.roomId.eq(roomId))
-//                ))
-//                .fetch();
-        //쿼리 테스트
-//        List<Long> sessions = jpaQueryFactory
-//                .select(qSession.member.id)
-//                .from(qSession)
-//                .where(qSession.chatRoom.roomId.eq(roomId))
-//                .fetch();
-//
-//        for (Long session : sessions) {
-//            log.info("member ID = {}", session);
-//
-//            List<String> members = jpaQueryFactory
-//                    .select(qMember.nickName)
-//                    .from(qMember)
-//                    .where(qMember.id.eq(session))
-//                    .fetch();
-//            log.info("nickname = {}", members.get(0));
-//        }
-//        List<Session> sessionInRoom = sessionRepository.findSessionInRoom(roomId);
-//        for (Session session : sessionInRoom) {
-//            log.info("session = {} ",session);
-//        }
-//        List<Member> memberInRoom = memberRepository.findMemberInRoom(sessionInRoom);
-//        for (Member member : memberInRoom) {
-//            log.info("member = {}", member);
-//        }
         List<Session> sessionList = sessionRepository.findSessionByChatRoom_RoomId(roomId);
         List<Long> longList = new ArrayList<>();
         for (Session session : sessionList) {
