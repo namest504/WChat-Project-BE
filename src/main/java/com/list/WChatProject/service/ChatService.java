@@ -157,7 +157,7 @@ public class ChatService {
                 .where(qMember.id.in(JPAExpressions
                         .select(qSession.member.id)
                         .from(qSession)
-                        .where(qSession.chatRoom.roomId.contains(roomId))
+                        .where(qSession.chatRoom.roomId.eq(roomId))
                 ))
                 .fetch();
         return chatRoomList;
