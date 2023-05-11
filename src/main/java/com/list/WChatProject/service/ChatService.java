@@ -153,7 +153,7 @@ public class ChatService {
                 .select(Projections.constructor(
                         NickNameResponseDto.class,
                         qMember.nickName))
-                .from(qMember, qSession)
+                .from(qMember)
                 .leftJoin(qSession.member)
                 .on(qSession.member.id.eq(qMember.id))
                 .where(qSession.chatRoom.roomId.eq(roomId))
