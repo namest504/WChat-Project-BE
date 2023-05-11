@@ -191,7 +191,13 @@ public class ChatService {
 //            log.info("nickname = {}", members.get(0));
 //        }
         List<Session> sessionInRoom = sessionRepository.findSessionInRoom(roomId);
+        for (Session session : sessionInRoom) {
+            log.info("session = {} ",session);
+        }
         List<Member> memberInRoom = memberRepository.findMemberInRoom(sessionInRoom);
+        for (Member member : memberInRoom) {
+            log.info("member = {}", member);
+        }
 
         return memberInRoom;
     }
