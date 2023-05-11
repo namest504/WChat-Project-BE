@@ -6,6 +6,7 @@ import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.security.jwt.MemberPrincipal;
 import com.list.WChatProject.service.ChatService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import static com.list.WChatProject.dto.MemberDto.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat")
+@Slf4j
 public class ChatRoomController {
 
     private final ModelMapper modelMapper;
@@ -87,6 +89,8 @@ public class ChatRoomController {
     // 방안엔 멤버 닉네임 불러오는 API
     @GetMapping("/room/users/{roomId}")
     public NickNameResponseDtos findMembersInRoom(@PathVariable String roomId) {
+        log.info("findMembersInRoom = {}",roomId);
+
         List<Member> membersInRoom = chatService.findMembersInRoom(roomId);
 
         List<NickNameResponseDto> resultList = membersInRoom
