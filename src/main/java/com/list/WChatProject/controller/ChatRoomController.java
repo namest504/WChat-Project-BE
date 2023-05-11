@@ -88,16 +88,17 @@ public class ChatRoomController {
 
     // 방안엔 멤버 닉네임 불러오는 API
     @GetMapping("/room/users/{roomId}")
-    public NickNameResponseDtos findMembersInRoom(@PathVariable String roomId) {
+    public List<Member> findMembersInRoom(@PathVariable String roomId) {
         log.info("findMembersInRoom = {}",roomId);
 
         List<Member> membersInRoom = chatService.findMembersInRoom(roomId);
 
-        List<NickNameResponseDto> resultList = membersInRoom
-                .stream()
-                .map(list -> modelMapper.map(list, NickNameResponseDto.class))
-                .collect(Collectors.toList());
+//        List<NickNameResponseDto> resultList = membersInRoom
+//                .stream()
+//                .map(list -> modelMapper.map(list, NickNameResponseDto.class))
+//                .collect(Collectors.toList());
 
-        return new NickNameResponseDtos(true, resultList);
+//        return new NickNameResponseDtos(true, resultList);
+        return membersInRoom;
     }
 }
