@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,7 +89,7 @@ public class ChatRoomController {
 
     // 방안엔 멤버 닉네임 불러오는 API
     @GetMapping("/room/users/{roomId}")
-    public List<Member> findMembersInRoom(@PathVariable String roomId) {
+    public NickNameResponseDtos findMembersInRoom(@PathVariable String roomId) {
         log.info("findMembersInRoom = {}",roomId);
 
         List<Member> membersInRoom = chatService.findMembersInRoom(roomId);
@@ -98,6 +99,11 @@ public class ChatRoomController {
 //                .map(list -> modelMapper.map(list, NickNameResponseDto.class))
 //                .collect(Collectors.toList());
 //        return new NickNameResponseDtos(true, resultList);
-        return membersInRoom;
+
+        List<NickNameResponseDto> nickNameResponseDtoList = new ArrayList<>();
+        for (Member member : membersInRoom) {
+            nickNameResponseDtoList.add(new NickNameResponseDto(member.getNickName()));
+        }
+        return new NickNameResponseDtos(true, nickNameResponseDtoList);
     }
 }
