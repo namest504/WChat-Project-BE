@@ -4,6 +4,7 @@ import com.list.WChatProject.entity.*;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.repository.ChatRoomRepository;
 import com.list.WChatProject.repository.MemberRepository;
+import com.list.WChatProject.repository.SessionRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -33,6 +34,7 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
+    private final SessionRepository sessionRepository;
     private final PasswordEncoder passwordEncoder;
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -188,7 +190,8 @@ public class ChatService {
 //                    .fetch();
 //            log.info("nickname = {}", members.get(0));
 //        }
-        List<Member> memberInRoom = memberRepository.findMemberInRoom(roomId);
+        List<Session> sessionInRoom = sessionRepository.findSessionInRoom(roomId);
+        List<Member> memberInRoom = memberRepository.findMemberInRoom(sessionInRoom);
 
         return memberInRoom;
     }

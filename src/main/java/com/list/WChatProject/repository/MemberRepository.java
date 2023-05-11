@@ -2,6 +2,7 @@ package com.list.WChatProject.repository;
 
 import com.list.WChatProject.entity.AccountType;
 import com.list.WChatProject.entity.Member;
+import com.list.WChatProject.entity.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,6 +19,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Boolean existsByNickName(String nickName);
     Optional<Member> findByUserIdAndAccountType(String userId, AccountType accountType);
 
-    @Query("select m.nickName from Member m where m.id in (select s.member.id from Session s where s.chatRoom.roomId = :roomId)")
-    List<Member> findMemberInRoom(@Param("roomId") String roomId);
+    @Query("select m.nickName from Member m where m.id in (:sessionList)")
+    List<Member> findMemberInRoom(@Param("sessionList") List<Session> sessionList);
 }
