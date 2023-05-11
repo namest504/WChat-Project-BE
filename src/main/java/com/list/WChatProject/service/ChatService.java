@@ -3,11 +3,13 @@ package com.list.WChatProject.service;
 import com.list.WChatProject.entity.*;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.repository.ChatRoomRepository;
+import com.list.WChatProject.repository.MemberRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,7 @@ import static com.list.WChatProject.dto.MemberDto.*;
 public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -145,19 +148,18 @@ public class ChatService {
         return false;
     }
 
-    public List<NickNameResponseDto> findMembersInRoom(String roomId) {
-        QSession qSession = new QSession("session");
-        QMember qMember = new QMember("member");
-
-        List<NickNameResponseDto> chatRoomList = jpaQueryFactory
-                .select(Projections.constructor(
-                        NickNameResponseDto.class,
-                        qMember.nickName))
-                .from(qMember)
-                .leftJoin(qSession.member)
-                .on(qSession.member.id.eq(qMember.id))
-                .where(qSession.chatRoom.roomId.eq(roomId))
-                .fetch();
+    public List<Member> findMembersInRoom(String roomId) {
+//        QSession qSession = new QSession("session");
+//        QMember qMember = new QMember("member");
+//        List<NickNameResponseDto> chatRoomList = jpaQueryFactory
+//                .select(Projections.constructor(
+//                        NickNameResponseDto.class,
+//                        qMember.nickName))
+//                .from(qMember)
+//                .leftJoin(qSession.member)
+//                .on(qSession.member.id.eq(qMember.id))
+//                .where(qSession.chatRoom.roomId.eq(roomId))
+//                .fetch();
 //        List<NickNameResponseDto> chatRoomList = jpaQueryFactory
 //                .select(Projections.constructor(
 //                        NickNameResponseDto.class,
@@ -170,7 +172,6 @@ public class ChatService {
 //                ))
 //                .fetch();
         //쿼리 테스트
-
 //        List<Long> sessions = jpaQueryFactory
 //                .select(qSession.member.id)
 //                .from(qSession)
@@ -187,8 +188,8 @@ public class ChatService {
 //                    .fetch();
 //            log.info("nickname = {}", members.get(0));
 //        }
+        List<Member> memberInRoom = memberRepository.findMemberInRoom(roomId);
 
-
-        return chatRoomList;
+        return memberInRoom;
     }
 }

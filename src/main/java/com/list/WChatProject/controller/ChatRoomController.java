@@ -1,6 +1,7 @@
 package com.list.WChatProject.controller;
 
 import com.list.WChatProject.entity.ChatRoom;
+import com.list.WChatProject.entity.Member;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.security.jwt.MemberPrincipal;
 import com.list.WChatProject.service.ChatService;
@@ -86,7 +87,13 @@ public class ChatRoomController {
     // 방안엔 멤버 닉네임 불러오는 API
     @GetMapping("/room/users/{roomId}")
     public NickNameResponseDtos findMembersInRoom(@PathVariable String roomId) {
-        List<NickNameResponseDto> membersInRoom = chatService.findMembersInRoom(roomId);
-        return new NickNameResponseDtos(true, membersInRoom);
+        List<Member> membersInRoom = chatService.findMembersInRoom(roomId);
+
+        List<NickNameResponseDto> resultList = membersInRoom
+                .stream()
+                .map(list -> modelMapper.map(list, NickNameResponseDto.class))
+                .collect(Collectors.toList());
+
+        return new NickNameResponseDtos(true, resultList);
     }
 }
