@@ -97,7 +97,6 @@ public class ChatRoomController {
 //                .stream()
 //                .map(list -> modelMapper.map(list, NickNameResponseDto.class))
 //                .collect(Collectors.toList());
-
 //        return new NickNameResponseDtos(true, resultList);
         return membersInRoom;
     }

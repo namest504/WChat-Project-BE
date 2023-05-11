@@ -21,4 +21,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m.nickName from Member m where m.id in (:sessionList)")
     List<Member> findMemberInRoom(@Param("sessionList") List<Session> sessionList);
+
+    List<Member> findMembersByIdIn(List<Long> longList);
 }

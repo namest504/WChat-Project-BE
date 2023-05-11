@@ -16,4 +16,6 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
 
     @Query("select s.member.id from Session s where s.chatRoom.roomId = :roomId")
     List<Session> findSessionInRoom(@Param("roomId") String roomId);
+
+    List<Session> findSessionByChatRoom_RoomId(String roomId);
 }

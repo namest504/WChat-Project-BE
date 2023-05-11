@@ -190,15 +190,21 @@ public class ChatService {
 //                    .fetch();
 //            log.info("nickname = {}", members.get(0));
 //        }
-        List<Session> sessionInRoom = sessionRepository.findSessionInRoom(roomId);
-        for (Session session : sessionInRoom) {
-            log.info("session = {} ",session);
+//        List<Session> sessionInRoom = sessionRepository.findSessionInRoom(roomId);
+//        for (Session session : sessionInRoom) {
+//            log.info("session = {} ",session);
+//        }
+//        List<Member> memberInRoom = memberRepository.findMemberInRoom(sessionInRoom);
+//        for (Member member : memberInRoom) {
+//            log.info("member = {}", member);
+//        }
+        List<Session> sessionList = sessionRepository.findSessionByChatRoom_RoomId(roomId);
+        List<Long> longList = new ArrayList<>();
+        for (Session session : sessionList) {
+            longList.add(session.getMember().getId());
         }
-        List<Member> memberInRoom = memberRepository.findMemberInRoom(sessionInRoom);
-        for (Member member : memberInRoom) {
-            log.info("member = {}", member);
-        }
+        List<Member> membersByIdIn = memberRepository.findMembersByIdIn(longList);
 
-        return memberInRoom;
+        return membersByIdIn;
     }
 }
