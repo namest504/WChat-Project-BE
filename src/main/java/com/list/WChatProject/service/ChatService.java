@@ -1,9 +1,6 @@
 package com.list.WChatProject.service;
 
-import com.list.WChatProject.entity.ChatRoom;
-import com.list.WChatProject.entity.QChatRoom;
-import com.list.WChatProject.entity.QMember;
-import com.list.WChatProject.entity.QSession;
+import com.list.WChatProject.entity.*;
 import com.list.WChatProject.exception.CustomException;
 import com.list.WChatProject.repository.ChatRoomRepository;
 import com.querydsl.core.types.Projections;
@@ -160,7 +157,7 @@ public class ChatService {
                 .where(qMember.id.in(JPAExpressions
                         .select(qSession.member.id)
                         .from(qSession)
-                        .where(qSession.chatRoom.roomId.eq(roomId))
+                        .where(qSession.chatRoom.roomId.contains(roomId))
                 ))
                 .fetch();
         return chatRoomList;
