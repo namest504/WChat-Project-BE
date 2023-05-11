@@ -160,6 +160,26 @@ public class ChatService {
                         .where(qSession.chatRoom.roomId.eq(roomId))
                 ))
                 .fetch();
+        //쿼리 테스트
+
+        List<Long> sessions = jpaQueryFactory
+                .select(qSession.member.id)
+                .from(qSession)
+                .where(qSession.chatRoom.roomId.eq(roomId))
+                .fetch();
+
+        for (Long session : sessions) {
+            log.info("member ID = {}", session);
+
+            List<String> members = jpaQueryFactory
+                    .select(qMember.nickName)
+                    .from(qMember)
+                    .where(qMember.id.eq(session))
+                    .fetch();
+            log.info("nickname = {}", members.get(0));
+        }
+
+
         return chatRoomList;
     }
 }
