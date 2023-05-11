@@ -1,6 +1,5 @@
 package com.list.WChatProject.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,11 +38,6 @@ public class Member implements UserDetails {
     private boolean isBan;
     @Column
     private LocalDateTime changeAt;
-
-    @JsonIgnore
-    @Builder.Default
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    List<Session> sessions = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

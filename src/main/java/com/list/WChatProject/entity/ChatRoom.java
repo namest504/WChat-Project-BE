@@ -1,12 +1,12 @@
 package com.list.WChatProject.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "chatroom")
@@ -32,11 +32,6 @@ public class ChatRoom {
     private boolean isSecret;
     @Column
     private LocalDateTime createAt;
-
-    @JsonIgnore
-    @Builder.Default
-    @OneToMany(mappedBy = "chatroom", cascade = CascadeType.ALL)
-    List<Session> sessions = new ArrayList<>();
 
 
 //    public static ChatRoom create(String name) {
