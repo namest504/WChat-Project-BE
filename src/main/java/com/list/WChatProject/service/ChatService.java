@@ -153,31 +153,40 @@ public class ChatService {
                 .select(Projections.constructor(
                         NickNameResponseDto.class,
                         qMember.nickName))
-                .from(qMember)
-                .where(qMember.id.in(JPAExpressions
-                        .select(qSession.member.id)
-                        .from(qSession)
-                        .where(qSession.chatRoom.roomId.eq(roomId))
-                ))
-                .fetch();
-        //쿼리 테스트
-
-        List<Long> sessions = jpaQueryFactory
-                .select(qSession.member.id)
-                .from(qSession)
+                .from(qMember, qSession)
+                .leftJoin(qSession.member)
+                .on(qSession.member.id.eq(qMember.id))
                 .where(qSession.chatRoom.roomId.eq(roomId))
                 .fetch();
+//        List<NickNameResponseDto> chatRoomList = jpaQueryFactory
+//                .select(Projections.constructor(
+//                        NickNameResponseDto.class,
+//                        qMember.nickName))
+//                .from(qMember)
+//                .where(qMember.id.in(JPAExpressions
+//                        .select(qSession.member.id)
+//                        .from(qSession)
+//                        .where(qSession.chatRoom.roomId.eq(roomId))
+//                ))
+//                .fetch();
+        //쿼리 테스트
 
-        for (Long session : sessions) {
-            log.info("member ID = {}", session);
-
-            List<String> members = jpaQueryFactory
-                    .select(qMember.nickName)
-                    .from(qMember)
-                    .where(qMember.id.eq(session))
-                    .fetch();
-            log.info("nickname = {}", members.get(0));
-        }
+//        List<Long> sessions = jpaQueryFactory
+//                .select(qSession.member.id)
+//                .from(qSession)
+//                .where(qSession.chatRoom.roomId.eq(roomId))
+//                .fetch();
+//
+//        for (Long session : sessions) {
+//            log.info("member ID = {}", session);
+//
+//            List<String> members = jpaQueryFactory
+//                    .select(qMember.nickName)
+//                    .from(qMember)
+//                    .where(qMember.id.eq(session))
+//                    .fetch();
+//            log.info("nickname = {}", members.get(0));
+//        }
 
 
         return chatRoomList;
