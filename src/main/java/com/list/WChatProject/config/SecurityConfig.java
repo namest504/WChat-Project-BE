@@ -72,6 +72,7 @@ public class SecurityConfig {
 
                 .authorizeRequests()
                 .antMatchers("/auth/kakao/callback").permitAll()
+                .antMatchers("/auth/refresh").permitAll()
 //                .antMatchers("/ws/chat").permitAll()
 //                .antMatchers("/", "/**").permitAll()
                 .antMatchers("/ws/chat/**").permitAll()
