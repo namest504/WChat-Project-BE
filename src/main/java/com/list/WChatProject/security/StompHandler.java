@@ -71,7 +71,6 @@ public class StompHandler implements ChannelInterceptor {
                 }
 //                log.info("DISCONNECT : [ {} ] [ {} ] [ {} ]",session.getId(), uidFromToken, session.getChatRoom().getRoomId());
                 break;
-
             case DISCONNECT:
                 log.info("DISCONNECT 시작 {}", accessor.getSessionId());
                 session = sessionRepository.findSessionByNowSessionId(accessor.getSessionId())
@@ -85,7 +84,18 @@ public class StompHandler implements ChannelInterceptor {
                 }
 //                log.info("DISCONNECT : [ {} ] [ {} ] [ {} ]",session.getId(), uidFromToken, session.getChatRoom().getRoomId());
                 break;
-
+            case ACK:
+            case NACK:
+            case SEND:
+            case ABORT:
+            case BEGIN:
+            case ERROR:
+            case STOMP:
+            case COMMIT:
+            case MESSAGE:
+            case RECEIPT:
+            case CONNECTED:
+                break;
             default:
                 break;
         }
