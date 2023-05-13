@@ -10,8 +10,8 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-				.allowedOrigins("https://web-wchat-project-fe-7hqac2alhi4ekqp.sel4.cloudtype.app")
-				.allowedOrigins("http://localhost:3000")
+//				.allowedOrigins("https://web-wchat-project-fe-7hqac2alhi4ekqp.sel4.cloudtype.app")
+//				.allowedOrigins("http://localhost:3000")
 				.allowedMethods(
 						HttpMethod.GET.name(),
 						HttpMethod.HEAD.name(),
