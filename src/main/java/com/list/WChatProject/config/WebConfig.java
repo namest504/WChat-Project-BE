@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**")
+		registry.addMapping("https://web-wchat-project-fe-7hqac2alhi4ekqp.sel4.cloudtype.app/")
 				.allowedMethods(
 						HttpMethod.GET.name(),
 						HttpMethod.HEAD.name(),
