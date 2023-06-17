@@ -1,0 +1,32 @@
+server:
+  port: ${set_port}
+spring:
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    url: jdbc:mariadb://wchat_mariadb:3306/wchatdb?serverTimezone=Asia/Seoul
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    password: 1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+
+logging:
+  level:
+    com.tutorial: debug
+
+KAKAO_OAUTH_API_KEY: 7e205eaf26a531e861c349706e49ba3c
+# redirect uri http://localhost:3000/auth/kakao/callback 으로 바꿔야 할 수도? 3.37.153.9
+KAKAO_OAUTH_REDIRECT_URI: https://web-wchat-project-fe-7hqac2alhi4ekqp.sel4.cloudtype.app/auth/kakao/callback
+KAKAO_OAUTH_INFORMATION_API_URI: https://kapi.kakao.com/v2/user/me
+KAKAO_OAUTH_TOKEN_API_URI: https://kauth.kakao.com/oauth/token
+jwt:
+  secret: kjasbdjkwqbtjkqnwgjkashu894y8129rbifsa67fg21bty78fshdfj95124bru789h124
