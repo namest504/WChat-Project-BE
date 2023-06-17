@@ -29,7 +29,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class StompHandler implements ChannelInterceptor {
+public class  StompHandler implements ChannelInterceptor {
     private final JwtService jwtService;
     private final ChatService chatService;
     private final SessionService sessionService;
